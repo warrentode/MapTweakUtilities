@@ -51,13 +51,25 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         end
 
         -- build productData dynamically from original recipe
-        local productData = {
-            -- the product will ALWAYS be the product of the original recipe
-            product = originalRecipeName,
-            image = originalRecipeName.image or nil,
-            numtogive = originalRecipeName.numtogive or nil,
-            hint_msg = originalRecipeName.hint_msg or nil
-        }
+        local productData
+
+        if originalRecipeName == "wendy_gravestone" then
+            local original = AllRecipes[originalRecipeName]
+            productData = {}
+
+            for k, v in pairs(original) do
+                if k ~= "name" and k ~= "ingredients" and k ~= "tech" then
+                    productData[k] = v
+                end
+            end
+        else
+            productData = {
+                product = originalRecipeName,
+                image = originalRecipeName.image or nil,
+                numtogive = originalRecipeName.numtogive or nil,
+                hint_msg = originalRecipeName.hint_msg or nil
+            }
+        end
 
         -- SPECIAL HANDLING for Halloween potions
         if originalRecipeName == "halloween_experiment_sanity" then
@@ -105,7 +117,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     -- single alt recipes for dark petals
     AddAltRecipe("nightmarefuel", "nightmarefuel_alt1", {{"petals_evil_dried", 4}})
     AddAltRecipe("halloween_experiment_sanity", "halloween_experiment_sanity_alt1", {{"crow", 1}, {"petals_evil_dried", 1}, {CHARACTER_INGREDIENT.SANITY, 10}})
-    AddAltRecipe("gravestone", "gravestone_alt1", {{"rocks", 3}, {"petals_evil_dried", 4}, {"boneshard", 2}})
+    AddAltRecipe("wendy_gravestone", "wendy_gravestone_alt1", {{"cutstone", 1}, {"petals_evil_dried", 4}})
 
     -- single alt recipes for foliage
     AddAltRecipe("pottedfern", "pottedfern_alt1", {{"foliage_dried", 2}, {"slurtle_shellpieces", 1}})
