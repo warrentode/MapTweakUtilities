@@ -6,8 +6,10 @@ GLOBAL.setmetatable(env, {
 
 ---------- FEATURE FILES ----------
 
-local load_alt_recipes = require("alt_recipes")
-load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT)
+if GetModConfigData("allow_alt_recipes") then
+    local load_alt_recipes = require("alt_recipes")
+    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT)
+end
 
 ---------- LUNE TREE BLOSSOM CONTROLS ----------
 

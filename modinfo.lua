@@ -6,7 +6,7 @@ See CHANGELOG for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/CHANGELOG.txt
 ]]
 author = "ToadieOdie"
-version = "1.3.2"
+version = "1.3.3"
 
 api_version = 10
 
