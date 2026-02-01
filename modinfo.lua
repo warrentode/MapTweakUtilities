@@ -10,6 +10,7 @@ Adds optional prevention of Merm King death from starvation.
 Adds optional dock kit placement on any ocean tile.
 Adds optional max length adjustment of the rope bridge.
 Adds optional removal of graves.
+Adds optional weed growth stage always looping.
 ]]
 author = "ToadieOdie"
 version = "1.2.0"
