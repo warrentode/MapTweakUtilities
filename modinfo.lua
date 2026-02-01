@@ -6,7 +6,7 @@ See CHANGELOG for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/CHANGELOG.txt
 ]]
 author = "ToadieOdie"
-version = "1.3.1"
+version = "1.3.2"
 
 api_version = 10
 
@@ -311,6 +311,19 @@ configuration_options = {
         name = "looping_weeds",
         label = "Weeds Growth Loop",
         hover = "If set to Yes, a weed cycles back into its growth loop after bolting.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Alt Recipe Settings"),
+    Title("=============================="),
+    {
+        name = "allow_alt_recipes",
+        label = "Allow Alt Recipes",
+        hover = "If set to Yes, alternate recipes using dried ingredients instead of fresh ones are added.",
         options = {
             {description = "YES", data = true},
             {description = "NO",  data = false},
