@@ -2,7 +2,8 @@ name = "Map Tweak Utilities"
 description = [[
 Adds a collection of small tweaks that I wanted but didn't really fit in with my other mods.
 
-See CHANGELOG for full details.
+See CHANGELOG for full details inside the mod's folder or visit:
+https://github.com/warrentode/MapTweakUtilities/blob/master/CHANGELOG.txt
 ]]
 author = "ToadieOdie"
 version = "1.3.0"
