@@ -9,9 +9,11 @@ Adds optional batch trading.
 Adds optional prevention of Merm King death from starvation.
 Adds optional dock kit placement on any ocean tile.
 Adds optional max length adjustment of the rope bridge.
+Adds optional removal of graves.
+Adds optional weed growth stage always looping.
 ]]
 author = "ToadieOdie"
-version = "1.1.0"
+version = "1.2.0"
 
 api_version = 10
 
@@ -303,6 +305,19 @@ configuration_options = {
         name = "remove_dug_grave",
         label = "Removable Dug Graves",
         hover = "If set to Yes, a dug up grave without a headstone can be can removed by digging it.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Weed Settings"),
+    Title("=============================="),
+    {
+        name = "looping_weeds",
+        label = "Weeds Growth Loop",
+        hover = "If set to Yes, a weed cycles back into its growth loop after bolting.",
         options = {
             {description = "YES", data = true},
             {description = "NO",  data = false},
