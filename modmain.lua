@@ -4,6 +4,11 @@ GLOBAL.setmetatable(env, {
     end,
 })
 
+---------- FEATURE FILES ----------
+
+local load_alt_recipes = require("alt_recipes")
+load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT)
+
 ---------- LUNE TREE BLOSSOM CONTROLS ----------
 
 local BLOSSOM_CAP = GetModConfigData("blossom_drop_cap") or 2
@@ -13,7 +18,7 @@ local BLOSSOM_CHANCE = GetModConfigData("blossom_drop_chance") or 0
 local function DoMoonBlossomRebirth(inst)
     local rebirth_loot = {loot = "moon_tree_blossom", max = BLOSSOM_CAP} -- ground-presence cap
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = GLOBAL.TheSim:FindEntities(x, y, z, 8)
+    local ents = TheSim:FindEntities(x, y, z, 8)
     local numloot = 0
 
     for i, ent in ipairs(ents) do
@@ -33,11 +38,11 @@ local function DoMoonBlossomRebirth(inst)
         end
     end
 
-    inst._lastrebirth = GLOBAL.GetTime()
+    inst._lastrebirth = GetTime()
 end
 
 local function PatchMoonTreeGrowth(inst)
-    if not GLOBAL.TheWorld.ismastersim then
+    if not TheWorld.ismastersim then
         return
     end
 
@@ -127,7 +132,7 @@ for k, v in pairs(plantregrowth_5_stage_list) do
     if v then
         AddPrefabPostInit(k, function(inst)
             inst:DoTaskInTime(0.1, function(inst)
-                if not GLOBAL.TheWorld.ismastersim then
+                if not TheWorld.ismastersim then
                     return
                 end
                 if inst.components and inst.components.growable then
@@ -167,7 +172,7 @@ for k, v in pairs(plantregrowth_list) do
     if v then
         AddPrefabPostInit(k, function(inst)
             inst:DoTaskInTime(0.1, function(inst)
-                if GLOBAL.TheWorld.ismastersim then
+                if TheWorld.ismastersim then
                     if inst.components and inst.components.growable then
                         inst.components.growable.loopstages = false
                     end

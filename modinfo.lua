@@ -1,19 +1,11 @@
 name = "Map Tweak Utilities"
 description = [[
-Adds passive blossom drops to Lune Blossom Trees.
-Adds optional settings for tree growth cycling per tree.
-Adds optional auto stacking of item drops.
-Adjusts twig dropping behavior from Twiggy Trees to account for auto stacking.
-Adds optional exclusion settings for items commonly used for traps, tracking, and auto farms.
-Adds optional batch trading.
-Adds optional prevention of Merm King death from starvation.
-Adds optional dock kit placement on any ocean tile.
-Adds optional max length adjustment of the rope bridge.
-Adds optional removal of graves.
-Adds optional weed growth stage always looping.
+Adds a collection of small tweaks that I wanted but didn't really fit in with my other mods.
+
+See CHANGELOG for full details.
 ]]
 author = "ToadieOdie"
-version = "1.2.0"
+version = "1.3.0"
 
 api_version = 10
 

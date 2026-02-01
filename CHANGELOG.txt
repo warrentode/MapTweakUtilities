@@ -1,0 +1,16 @@
+1.3.0:
+* Adds optional alternate crafting recipes to use dried ingredients in place of fresh ones.
+1.2.0:
+* Adds optional removal of graves.
+* Adds optional weed growth stage always looping.
+1.1.0:
+* Adjusts twig dropping behavior from Twiggy Trees to account for auto stacking.
+* Adds optional batch trading.
+* Adds optional prevention of Merm King death from starvation.
+* Adds optional dock kit placement on any ocean tile.
+* Adds optional max length adjustment of the rope bridge.
+1.0.0:
+* Adds passive blossom drops to Lune Blossom Trees.
+* Adds optional settings for tree growth cycling per tree.
+* Adds optional auto stacking of item drops.
+* Adds optional exclusion settings for items commonly used for traps, tracking, and auto farms.
