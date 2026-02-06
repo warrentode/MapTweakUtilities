@@ -29,7 +29,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
 
     local function SortRecipe(tab, altRecipeName, originalRecipeName)
         local FILTERS = CRAFTING_FILTERS[tab]
-        if originalRecipeName == nil or FILTERS.default_sort_values[originalRecipeName] == nil then
+        if originalRecipeName == nil then
             AddRecipeToFilter(altRecipeName, tab)
         else
             table.insert(FILTERS.recipes, FILTERS.default_sort_values[originalRecipeName] + 1, altRecipeName)
@@ -51,45 +51,43 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         end
 
         -- build productData dynamically from original recipe
-        local productData
+        local recipeData
 
-        if originalRecipeName == "wendy_gravestone" or
-                originalRecipeName == "ghostlyelixir_revive" then
+        -- SPECIAL HANDLING for character filter recipes
+        if originalRecipeName == "wendy_gravestone" or originalRecipeName == "ghostlyelixir_revive" or
+                originalRecipeName == "lighter" or originalRecipeName == "wx78module_maxsanity1" then
             local original = AllRecipes[originalRecipeName]
-            productData = {}
+            recipeData = {}
 
             for k, v in pairs(original) do
                 if k ~= "name" and k ~= "ingredients" and k ~= "tech" then
-                    productData[k] = v
+                    recipeData[k] = v
                 end
             end
+            -- DEFAULT HANDLING for regular filter recipes
         else
             local originalRecipe = AllRecipes[originalRecipeName]
-            productData = {
+            recipeData = {
                 product = originalRecipeName,
                 image = originalRecipe.image or nil,
                 numtogive = originalRecipe.numtogive or 1,
-                hint_msg = originalRecipe.hint_msg or nil
+                hint_msg = originalRecipe.hint_msg or nil,
+                actionstr = originalRecipe.actionstr or nil,
+                station_tag = originalRecipe.station_tag or nil,
+                nounlock = originalRecipe.nounlock or nil
             }
         end
 
-        -- SPECIAL HANDLING for Halloween potions
-        if originalRecipeName == "halloween_experiment_sanity" then
-            productData.image = "halloweenpotion_sanity_small.tex"
-        elseif originalRecipeName == "halloween_experiment_moon" then
-            productData.image = "halloweenpotion_moon.tex"
-        end
-
-        for k, v in pairs(productData) do
+        for k, v in pairs(recipeData) do
             if v == nil then
-                productData[k] = nil
+                recipeData[k] = nil
             end
         end
 
         -- grab filter dynamically from original recipe
         local tabs = GetRecipeFilters(originalRecipeName)
 
-        AddRecipe2(altRecipeName, ingTable, tech, productData)
+        AddRecipe2(altRecipeName, ingTable, tech, recipeData)
         if tabs and originalRecipeName then
             for _, tab in ipairs(tabs) do
                 SortRecipe(tab, altRecipeName, originalRecipeName)
@@ -118,7 +116,6 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
 
     -- single alt recipes for dark petals
     AddAltRecipe("nightmarefuel", "nightmarefuel_alt1", {{"petals_evil_dried", 4}})
-    AddAltRecipe("halloween_experiment_sanity", "halloween_experiment_sanity_alt1", {{"crow", 1}, {"petals_evil_dried", 1}, {CHARACTER_INGREDIENT.SANITY, 10}})
     AddAltRecipe("wendy_gravestone", "wendy_gravestone_alt1", {{"cutstone", 1}, {"petals_evil_dried", 4}})
 
     -- single alt recipes for foliage
@@ -127,10 +124,6 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
 
     -- single alt recipes for succulent
     AddAltRecipe("succulent_potted", "succulent_potted_alt1", {{"succulent_picked_dried", 2}, {"cutstone", 1}})
-
-    -- single alt recipes for lune blossoms
-    AddAltRecipe("bathbomb", "bathbomb_alt1", {{"moon_tree_blossom_dried", 1}, {"nitre", 1}})
-    AddAltRecipe("halloween_experiment_moon", "halloween_experiment_moon_alt1", {{"moonbutterflywings", 1}, {"moon_tree_blossom_dried", 1}, {CHARACTER_INGREDIENT.SANITY, 10}})
 
     -- single alt recipes for forget-me-lots
     AddAltRecipe("ghostlyelixir_revive", "ghostlyelixir_revive_alt1", {{"forgetmelots_dried", 1}, {"ghostflower", 3}})
@@ -141,5 +134,77 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     AddAltRecipe("soil_amender", "soil_amender_alt1", {{"messagebottleempty", 1}, {"kelp_dried", 1}, {"ash", 1}})
     AddAltRecipe("boat_bumper_kelp_kit", "boat_bumper_kelp_kit_alt1", {{"kelp_dried", 3}, {"cutgrass", 3}})
     AddAltRecipe("boatpatch_kelp", "boatpatch_kelp_alt1", {{"kelp_dried", 3}})
+
+    ----- SPECIAL CASE STATION SPECIFIC RECIPE HANDLING -----
+
+    -- sorting for alt recipes that should stay strictly in CRAFTING_STATION
+    local function SortAltRecipeSpecial(altRecipeName, originalRecipeName)
+        local FILTER = CRAFTING_FILTERS.CRAFTING_STATION
+
+        if originalRecipeName == nil then
+            -- Do nothing if original not found; vanilla fallback already happened
+            return
+        end
+
+        -- Remove vanilla-added entry first
+        for i = #FILTER.recipes, 1, -1 do
+            if FILTER.recipes[i] == altRecipeName then
+                table.remove(FILTER.recipes, i)
+            end
+        end
+
+        -- Insert ONLY if original exists
+        for i, recipe in ipairs(FILTER.recipes) do
+            if recipe == originalRecipeName then
+                table.insert(FILTER.recipes, i + 1, altRecipeName)
+                return
+            end
+        end
+    end
+
+    AddRecipe2("bathbomb_alt1",
+               {
+                   Ingredient("moon_tree_blossom_dried", 1),
+                   Ingredient("nitre", 1)
+               },
+               TECH.CELESTIAL_ONE,
+               {
+                   product = "bathbomb",
+                   nounlock = true
+               }
+    )
+    SortAltRecipeSpecial("bathbomb_alt1", "bathbomb")
+    AddRecipe2("halloween_experiment_sanity_alt1",
+               {
+                   Ingredient("crow", 1),
+                   Ingredient("petals_evil_dried", 1),
+                   Ingredient(CHARACTER_INGREDIENT.SANITY, 10)
+               },
+               TECH.MADSCIENCE_ONE,
+               {
+                   product = "halloween_experiment_sanity",
+                   nounlock = true,
+                   manufactured = true,
+                   actionstr = "MADSCIENCE",
+                   image = "halloweenpotion_sanity_small.tex"
+               }
+    )
+    SortAltRecipeSpecial("halloween_experiment_sanity_alt1", "halloween_experiment_sanity")
+    AddRecipe2("halloween_experiment_moon_alt1",
+               {
+                   Ingredient("moonbutterflywings", 1),
+                   Ingredient("moon_tree_blossom_dried", 1),
+                   Ingredient(CHARACTER_INGREDIENT.SANITY, 10)
+               },
+               TECH.MADSCIENCE_ONE,
+               {
+                   product = "halloween_experiment_moon",
+                   nounlock = true,
+                   manufactured = true,
+                   actionstr = "MADSCIENCE",
+                   image = "halloweenpotion_moon.tex"
+               }
+    )
+    SortAltRecipeSpecial("halloween_experiment_moon_alt1", "halloween_experiment_moon")
 
 end

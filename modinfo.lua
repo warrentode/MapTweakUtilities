@@ -1,12 +1,16 @@
 name = "Map Tweak Utilities"
 description = [[
-Adds a collection of small tweaks that I wanted but didn't really fit in with my other mods.
+Adds a collection of tweaks that I have found helpful while playing on shared maps with my sons.
+Meaning we tend to build one shared mega base and work together on everything.
+So everything tweaked inside this mod is with this style of co-op in mind.
+
+Each tweak is optional, so if you're already using a mod that covers it you can just keep it disabled in this mod.
 
 See CHANGELOG for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/CHANGELOG.txt
 ]]
 author = "ToadieOdie"
-version = "1.3.4"
+version = "2.1.1"
 
 api_version = 10
 
@@ -241,17 +245,28 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
-    Title("Merm King Settings"),
+    Title("Block Starvation"),
+    Title("Death Settings"),
     Title("=============================="),
     {
         name = "no_starve_mermking",
-        label = "Prevent Starvation Death",
+        label = "Merm King",
         hover = "If set to YES, he will still get hungry and complain about it but not die from it",
         options = {
             {description = "YES", data = true},
             {description = "NO",  data = false},
         },
-        default = true,
+        default = false,
+    },
+    {
+        name = "no_starve_bird_cage",
+        label = "Bird Cage",
+        hover = "If set to YES, birds in bird cages will not starve.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
     },
     Title("=============================="),
     Title("Dock Kit Settings"),
@@ -285,19 +300,9 @@ configuration_options = {
     Title("Grave Settings"),
     Title("=============================="),
     {
-        name = "smashable_headstone",
-        label = "Smashable Headstones",
-        hover = "If set to Yes, the headstone can be smashed for a chance of marble or cut stone and removes the mound that goes with it.",
-        options = {
-            {description = "YES", data = true},
-            {description = "NO",  data = false},
-        },
-        default = false,
-    },
-    {
-        name = "remove_dug_grave",
-        label = "Removable Dug Graves",
-        hover = "If set to Yes, a dug up grave without a headstone can be can removed by digging it.",
+        name = "remove_grave",
+        label = "Removable Graves",
+        hover = "If set to Yes, headstones can be smashed and empty graves can be removed by digging.",
         options = {
             {description = "YES", data = true},
             {description = "NO",  data = false},
@@ -327,6 +332,166 @@ configuration_options = {
         options = {
             {description = "YES", data = true},
             {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Webber Recipe Settings"),
+    Title("=============================="),
+    {
+        name = "allow_webber_bulk",
+        label = "Allow Alt Webber Recipes",
+        hover = "If set to Yes, alternate recipes for Webber are added.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    {
+        name = "webber_bulk_count",
+        label = "Webber Bulk Product Count",
+        hover = "Set the product count multiplier for Webber's bulk recipes if his alt recipes are enabled.",
+        options = {
+            {description = "5",  data = 5},
+            {description = "10 (Default)",  data = 10},
+            {description = "15",  data = 15},
+            {description = "20",  data = 20},
+        },
+        default = 10,
+    },
+    Title("=============================="),
+    Title("Ranged Weapon Settings"),
+    Title("=============================="),
+    {
+        name = "howlitzer_stacksize",
+        label = "Howlitzer Stack Size",
+        hover = "If set to Yes, ammo slot stack size is infinite.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    {
+        name = "slingshot_everyone",
+        label = "Everyone Equip Slingshot",
+        hover = "If set to Yes, the slingshot can be equipped by everyone. Recipes remain Walter only.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Portable Campfire Settings"),
+    Title("=============================="),
+    {
+        name = "portablecampfire_everyone",
+        label = "Everyone Use Portable Campfire",
+        hover = "If set to Yes, the portable campfire can be placed and picked up by everyone. Recipe remains Walter only.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Wandering Trader Settings"),
+    Title("=============================="),
+    {
+        name = "wanderingtrader_alt_trades",
+        label = "Extra Trades Added",
+        hover = "If set to Yes, the Wandering Trader will have extra trades added to his list of offerings.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO",  data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Boss Loot Scaling"),
+    Title("=============================="),
+    {
+        name = "scale_boss_loot",
+        label = "Scaling Mode",
+        hover = "Set which boss loot scaling mode you want used.",
+        options = {
+            {description = "No Scaling", data = 0},
+            {description = "By Players Logged In", data = 1},
+            {description = "By Players in Range", data = 2},
+        },
+        default = 0,
+    },
+    {
+        name = "boss_scale_range",
+        label = "Player Boss Range",
+        hover = "Radius around boss to count players for loot scaling if set to this scaling mode.",
+        options =
+        {
+            {description = "10", data = 10},
+            {description = "20", data = 20},
+            {description = "30", data = 30},
+            {description = "40", data = 40},
+            {description = "50", data = 50},
+        },
+        default = 30,
+    },
+    {
+        name = "boss_scale_blueprints",
+        label = "Scale Blueprint Drops",
+        hover = "Toggle scaling for boss blueprint drops.",
+        options =
+        {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "scale_boss_worm_mouth",
+        label = "Scale Boss Worm Mouth",
+        hover = "Include Boss Worm Mouth in scaling (requires the Giant Worm Can Dig Wormhole mod) - gives 2 mouths per player",
+        options =
+        {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Item Protections"),
+    Title("=============================="),
+    {
+        name = "no_swiping",
+        label = "Protect Items From Being Swiped",
+        hover = "If Enabled, items cannot be stolen, rumaged, harvested, or eaten by other mobs.",
+        options =
+        {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "allow_slurtles",
+        label = "Allow Slurtle Eating",
+        hover = "If Enabled, slurtles and snurtles will be allowed to eat items on the ground when swiping protections are enabled.",
+        options =
+        {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "allow_worm_boss",
+        label = "Allow Worm Boss Eating",
+        hover = "If Enabled, the great depths worm will eat things normally when swiping protections are enabled.",
+        options =
+        {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
         },
         default = false,
     },

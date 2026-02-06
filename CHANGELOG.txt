@@ -1,3 +1,24 @@
+2.1.1:
+* Fixed incorrect config checks for the stone fruit bush and twiggy tree growth cycling
+2.1.0:
+* Added boss loot scaling for co-op play
+* Added a patch for the worm boss mouth mod to return the mouth item when removing a wormhole
+* Added an optional "no swiping" feature
+2.0.0:
+* heavily refactored the code for ease of maintaining in the future
+1.4.0:
+* Added option to allow for extra trades added to the wandering trader
+* Added custom portable cold campfire, recipe for Walter only
+* Added option to allow everyone to place and pickup portable campfire
+* Added option to allow everyone to equip and use the basic slingshot
+** slingshots with mod parts still only useable by Walter
+** all slingshot and ammo related recipes still Walter only
+* Added option to set the Howlitzer to hold infinite ammo
+* Added configurable options for enabling alt recipes just for Webber
+** alt recipe for giftwrap giving one on craft
+** bulk recipes for mutator items, unlocked when single versions are unlocked with retrofitting
+1.3.5:
+* Fixed problem with filtering alt recipes specific to a crafting station
 1.3.4:
 * Fixed incorrect amount given from alt recipes
 1.3.3:
