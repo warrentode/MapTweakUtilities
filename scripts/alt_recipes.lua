@@ -53,7 +53,8 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         -- build productData dynamically from original recipe
         local productData
 
-        if originalRecipeName == "wendy_gravestone" then
+        if originalRecipeName == "wendy_gravestone" or
+                originalRecipeName == "ghostlyelixir_revive" then
             local original = AllRecipes[originalRecipeName]
             productData = {}
 
@@ -63,11 +64,12 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
                 end
             end
         else
+            local originalRecipe = AllRecipes[originalRecipeName]
             productData = {
                 product = originalRecipeName,
-                image = originalRecipeName.image or nil,
-                numtogive = originalRecipeName.numtogive or nil,
-                hint_msg = originalRecipeName.hint_msg or nil
+                image = originalRecipe.image or nil,
+                numtogive = originalRecipe.numtogive or 1,
+                hint_msg = originalRecipe.hint_msg or nil
             }
         end
 
@@ -96,7 +98,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     end
 
     local function AddAltTillweedSalveRecipe(altRecipeName, tillweedIngredient, petalIngredient)
-        AddAltRecipe("tillweedsalve", altRecipeName,{{tillweedIngredient, 4}, {petalIngredient, 4}, {"charcoal", 1}})
+        AddAltRecipe("tillweedsalve", altRecipeName, {{tillweedIngredient, 4}, {petalIngredient, 4}, {"charcoal", 1}})
     end
 
     -- tillweed salve alt recipe set
@@ -110,8 +112,8 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     AddAltRecipe("minifan", "minifan_alt1", {{"twigs", 3}, {"petals_dried", 1}})
     AddAltRecipe("reskin_tool", "reskin_tool_alt1", {{"twigs", 1}, {"petals_dried", 4}})
     AddAltRecipe("turf_grass", "turf_grass_alt1", {{"cutgrass", 1}, {"petals_dried", 1}})
-    AddAltRecipe("lighter", "lighter_alt1", {{"rope", 1}, {"goldnugget", 1},{"petals_dried", 3}})
-    AddAltRecipe("wx78module_maxsanity1", "wx78module_maxsanity1_alt1", {{"rope", 1}, {"goldnugget", 1},{"petals_dried", 3}})
+    AddAltRecipe("lighter", "lighter_alt1", {{"rope", 1}, {"goldnugget", 1}, {"petals_dried", 3}})
+    AddAltRecipe("wx78module_maxsanity1", "wx78module_maxsanity1_alt1", {{"rope", 1}, {"goldnugget", 1}, {"petals_dried", 3}})
     AddAltRecipe("giftwrap", "giftwrap_alt1", {{"papyrus", 1}, {"petals_dried", 1}})
 
     -- single alt recipes for dark petals

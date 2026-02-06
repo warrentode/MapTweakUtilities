@@ -1,3 +1,5 @@
+1.3.4:
+* Fixed incorrect amount given from alt recipes
 1.3.3:
 * Fixed alt recipe config setting not being applied
 1.3.2:
