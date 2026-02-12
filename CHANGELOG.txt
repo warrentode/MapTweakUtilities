@@ -1,3 +1,10 @@
+2.2.0:
+* Added customization options for the Balatro machine
+2.1.3:
+* Patched the scaled boss loot so it's injected into the vanilla loot pool instead of replacing it
+* Patched the player count tracking for the "By Players Logged In" scaling mode so it's not shard based
+2.1.2:
+* Fixed unintended grave removal behavior
 2.1.1:
 * Fixed incorrect config checks for the stone fruit bush and twiggy tree growth cycling
 2.1.0:

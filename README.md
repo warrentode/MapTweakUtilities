@@ -1,0 +1,33 @@
+Adds a collection of tweaks that I have found helpful while playing on shared maps with my sons.
+Meaning we tend to build one shared mega base and work together on everything.
+So everything tweaked inside this mod is with this style of co-op in mind.
+
+Each tweak is optional, so if you're already using a mod that covers it you can just keep it disabled in this mod.
+
+Current list of features added:
+* Portable Endothermic Firepit for Walter
+* Auto Stacking of Newly Dropped Items with Configurable Items to Exclude for Auto Farms
+* Lunar Blossom Trees drop blossoms the same way twigs are dropped from Twiggy Trees
+* Blossom and Twigs drop based on counts inside a stack rather than counting 1 stack as 1 item
+* Turn off tree growth cycle looping per tree type
+* Batch trading with Pig King, Merm King, Antlion, and Bird Cage
+* Block starvation death of Merm King and Bird Cage
+* Place Dock Kits on any ocean tile
+* Configurable max length of Rope Bridge
+* Removable graves
+* Weeds continue to loop growth cycle after bolting
+* Alt recipes using dried ingredients instead of fresh ones
+* Alt recipes for Webber with bulk count settings
+* Howlitzer can hold an infinite amount of teeth
+* Basic slingshot can be equipped by everyone
+* Portable campfires can be placed and picked up by everyone
+* Wandering Trader has extra trades
+* Boss loot scaling with two scaling modes: "number of players logged in" or "number of players in range"
+* Item swiping protections: items cannot be stolen from player, rummaged, or picked/eaten off the ground by thief type mobs
+* Balatro rewards are now customizable with randomized loot tables
+
+***
+If you like this mod, you can support my work by either subscribing or tipping in the following ways:
+
+[![patreon](https://artofchaos.blog/wp-content/uploads/2020/07/PatreonButton.png)](https://patreon.com/user?u=28915059) [![ko-fi](https://artofchaos.blog/wp-content/uploads/2020/07/KofiButton.png)](https://ko-fi.com/G2G19AEG) [![pay-pal](https://artofchaos.blog/wp-content/uploads/2020/07/PayPalButton.png)](https://www.paypal.me/ToadieOdie?locale.x=en_US)
+***

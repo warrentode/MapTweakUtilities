@@ -148,7 +148,6 @@ return function(AddPrefabPostInit, config)
                     if inst.components and inst.components.plantregrowth then
                         inst:RemoveComponent("plantregrowth")
                     end
-
                 end)
             end)
         end

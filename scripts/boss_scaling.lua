@@ -1,6 +1,6 @@
 -- custom boss loot scaling logic
 
-return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport, KnownModIndex)
+return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport, KnownModIndex)
     -- Import boss loot table
     modimport "scripts/boss_loot.lua"
 
@@ -10,6 +10,7 @@ return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPo
     local BOSS_SCALING_BLUEPRINTS = config.BOSS_SCALING_BLUEPRINTS
     local BOSS_SCALING_WORM_MOUTH = config.BOSS_SCALING_WORM_MOUTH
 
+    local GetSharedLootTable = GetSharedLootTable
     local SetSharedLootTable = SetSharedLootTable
     local AllPlayers = AllPlayers or {}
 
@@ -37,7 +38,7 @@ return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPo
                 -- scaling based on players in range
                 local boss_pos = boss:GetPosition()
                 for _, player in ipairs(AllPlayers) do
-                    if player and player:IsValid() and distsq(player:GetPosition(), boss_pos) <= BOSS_SCALING_RANGE^2 then
+                    if player and player:IsValid() and distsq(player:GetPosition(), boss_pos) <= BOSS_SCALING_RANGE ^ 2 then
                         table.insert(eligible, player)
                     end
                 end
@@ -56,8 +57,10 @@ return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPo
     local function ScaleLootTable(inst)
         local scale_items = mtu_scaled_loot[inst.prefab] or {}
         local eligible_players = GetEligiblePlayers(inst)
-        local player_count = #eligible_players
-        if player_count <= 0 then return end
+        local player_count = math.max(0, #eligible_players - 1)
+        if player_count <= 0 then
+            return
+        end
 
         local new_loot = {}
         local maximum_drop = player_count
@@ -85,17 +88,45 @@ return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPo
             end
         end
 
-        -- Apply loot table for everything else
-        SetSharedLootTable(inst, new_loot)
-        if inst.components.lootdropper then
-            inst.components.lootdropper:SetChanceLootTable(inst)
+        -- Inject scaled loot instead of overwriting the original table
+        if player_count > 1 then
+            local lootdropper = inst.components.lootdropper
+            if not lootdropper then
+                return
+            end
+
+            local table_name = lootdropper.chanceloottable
+            if not table_name then
+                return
+            end
+
+            local original_loot = GetSharedLootTable(table_name)
+            if not original_loot then
+                return
+            end
+
+            -- copy original loot first
+            local merged_loot = {}
+            for i = 1, #original_loot do
+                merged_loot[#merged_loot + 1] = original_loot[i]
+            end
+
+            -- inject scaled loot
+            for i = 1, #new_loot do
+                merged_loot[#merged_loot + 1] = new_loot[i]
+            end
+
+            SetSharedLootTable(table_name, merged_loot)
+            lootdropper:SetChanceLootTable(table_name)
         end
     end
 
     -- Attach scaling and attacker tracking to bosses
-    for boss,_ in pairs(mtu_scaled_loot) do
+    for boss, _ in pairs(mtu_scaled_loot) do
         AddPrefabPostInit(boss, function(inst)
-            if not TheWorld.ismastersim then return end
+            if not TheWorld.ismastersim then
+                return
+            end
             ScaleLootTable(inst)
         end)
     end
@@ -103,18 +134,28 @@ return function(MTU, config, SetSharedLootTable, AllPlayers, distsq, AddPrefabPo
     -- Worm mouth scaling
     if WORM_BOSS_MOUTH_MOD then
         AddPrefabPostInit("worm_boss", function(inst)
-            if not TheWorld.ismastersim then return end
-            if not BOSS_SCALING_WORM_MOUTH then return end
-            if not inst.components.lootdropper then return end
+            if not TheWorld.ismastersim then
+                return
+            end
+            if not BOSS_SCALING_WORM_MOUTH then
+                return
+            end
+            if not inst.components.lootdropper then
+                return
+            end
 
             -- Spawn extra worm mouths when the boss dies
             inst:ListenForEvent("death_ended", function()
                 local lootdropper = inst.components.lootdropper
-                if not lootdropper then return end
+                if not lootdropper then
+                    return
+                end
 
                 local eligible_players = GetEligiblePlayers(inst)
                 local player_count = #eligible_players
-                if player_count <= 0 then return end
+                if player_count <= 0 then
+                    return
+                end
 
                 -- Count existing worm mouths in the loot table
                 local existing_mouths = 0

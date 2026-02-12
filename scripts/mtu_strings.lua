@@ -18,4 +18,22 @@ return function(STRINGS)
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_PINECONE = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_ACORN = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_BEDROLL_STRAW = "Sleep on the go, where ever you need to."
+    -- balatro related strings
+    local NEW_REWARD_STRINGS = {
+        KILLERBEE = "KILLER BEES",
+        SPIDER = "SPIDERS",
+        HOUND = "HOUNDS",
+        WORM = "WORMS",
+        BIRCHNUTDRAKE = "NOTHING",
+        REFINEDRESOURCES = "REFINED RESOURCES",
+        SNACKS = "SNACKS",
+        TREATS = "TREATS",
+        RARITIES = "RARITIES"
+    }
+    for k,v in pairs(NEW_REWARD_STRINGS) do
+        STRINGS.BALATRO.JIMBO_REWARD_TYPES[k] = v
+    end
+    STRINGS.BALATRO.JIMBO_NO_EXTRAS = "Oh, the boss says no extras for you. Too bad!"
+    STRINGS.BALATRO.JIMBO_NO_CARDS = "Oh, the boss says no cards for you. Too bad!"
+    STRINGS.BALATRO.JIMBO_NO_RECORD = "Oh, the boss says no record for you. Too bad!"
 end

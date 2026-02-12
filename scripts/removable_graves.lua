@@ -24,6 +24,18 @@ return function(AddSimPostInit, AddPrefabPostInit, ACTIONS, TUNING)
     end
 
     local function OnSmashedHeadstone(inst, worker)
+        local x, y, z = inst.Transform:GetWorldPosition()
+
+        if inst.mound and inst.mound.components.workable then
+            -- Gravestone smashed before mound dug
+            local new_mound = SpawnPrefab("mound")
+            new_mound.Transform:SetPosition(x, y, z)
+
+            inst:Remove() -- remove the gravestone
+            return
+        end
+
+        -- Normal headstone smash (after mound dug)
         if worker and worker.components.sanity then
             worker.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
         end
@@ -65,6 +77,42 @@ return function(AddSimPostInit, AddPrefabPostInit, ACTIONS, TUNING)
                 inst.components.workable:SetWorkLeft(1)
                 inst.components.workable:SetOnFinishCallback(OnRemoveGrave)
             end
+        end
+    end)
+
+    AddPrefabPostInit("mound", function(inst)
+        if not TheWorld.ismastersim then
+            return
+        end
+
+        local old_onfinish = inst.components.workable and inst.components.workable.onfinish or nil
+
+        if inst.components.workable then
+            inst.components.workable:SetOnFinishCallback(function(inst2, worker)
+                -- call vanilla loot and sanity logic
+                if old_onfinish then
+                    old_onfinish(inst2, worker)
+                end
+
+                -- handle second dig removal
+                if not inst2._dug_once then
+                    -- mark as dug once, keep workable for second dig
+                    inst2._dug_once = true
+                    -- re-add workable if removed
+                    if inst2.components.workable == nil then
+                        inst2:AddComponent("workable")
+                        inst2.components.workable:SetWorkAction(ACTIONS.DIG)
+                        inst2.components.workable:SetWorkLeft(1)
+                        inst2.components.workable:SetOnFinishCallback(inst2._original_onfinish)
+                    end
+                else
+                    -- second dig: remove mound completely
+                    inst2:Remove()
+                end
+            end)
+
+            -- store reference for re-adding workable
+            inst._original_onfinish = inst.components.workable.onfinish
         end
     end)
 
