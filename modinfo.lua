@@ -10,7 +10,7 @@ See README for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/README.md
 ]]
 author = "ToadieOdie"
-version = "2.2.0"
+version = "2.3.0"
 
 api_version = 10
 
@@ -25,7 +25,7 @@ icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 
 forumthread = ""
-priority = 0
+priority = -9999 -- because of compat settings we want to be loaded last
 
 local Empty = {{description = "", data = 0}}
 
@@ -35,12 +35,100 @@ end
 
 configuration_options = {
     Title("=============================="),
+    Title("Picnic Casket Settings"),
+    Title("=============================="),
+    {
+        name = "extra_basket_items",
+        label = "Additional Storable",
+        hover = "If Enabled, flower garden related items, elixer ingredients, and the Wraith's Wreath will be storable in the basket.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Dried Food Settings"),
+    Title("=============================="),
+    {
+        name = "dried_food_perish_time",
+        label = "Increase Perish Time",
+        hover = "Set whether or not dried foods should last 80 days.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Chef Pouch Settings"),
+    Title("=============================="),
+    {
+        name = "spicepack_waterproof",
+        label = "Make It Waterproof",
+        hover = "Set it to be waterproof or not.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "spicepack_burnable",
+        label = "Make It Burnable",
+        hover = "Set it to be burnable or not.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = true,
+    },
+    {
+        name = "spicepack_inventory",
+        label = "Make It Storable",
+        hover = "Set it to be storable or not.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "spicepack_perish_mult",
+        label = "Set Perish Multiplier",
+        hover = "Set the perish multiplier.",
+        {
+            {description = "No Change", data = 1},
+            {description = "x2 Slower", data = 0.5},
+            {description = "x4 Slower", data = 0.25},
+            {description = "x8 Slower", data = 0.125},
+            {description = "x16 Slower", data = 0.0625},
+            {description = "Never", data = 0},
+            {description = "Refresh", data = -1},
+            {description = "Spoil", data = 9000},
+        },
+        default = 1,
+    },
+    Title("=============================="),
+    Title("Medical Haunting"),
+    Title("=============================="),
+    {
+        name = "medical_haunt",
+        label = "Enable Medical Haunting",
+        hover = "If set to Enabled, containers can be haunted to force drop revival items from it.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
     Title("Auto Stacking Settings"),
     Title("=============================="),
     {
         name = "auto_stack_enabled",
         label = "Enable Auto Stacking",
-        hover = "if set to OFF, no items will auto-stack regardless of other settings.",
+        hover = "If set to OFF, no items will auto-stack regardless of other settings.",
         options = {
             {description = "OFF", data = false},
             {description = "ON", data = true},
@@ -409,6 +497,26 @@ configuration_options = {
         },
         default = false,
     },
+    {
+        name = "wanderingtrader_walter_trades",
+        label = "Add Walter Specific Item Trades",
+        hover = "If set to Yes, the Wandering Trader will have extra trades based on the slingshot and portable campfire settings.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_icon",
+        label = "Mini Map Icon",
+        hover = "If set to Yes, while extra trades are enabled, the Wandering Trader will have a persistent icon on the map to always showing where he is.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
     Title("=============================="),
     Title("Boss Loot Scaling"),
     Title("=============================="),
@@ -490,8 +598,67 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
+    Title("Follower Protections"),
+    Title("=============================="),
+    {
+        name = "protect_followers",
+        label = "Protect Followers",
+        hover = "If Enabled, the following mobs will be protected: Chester, Hutch, Extra-Adorable Lavae, Friendly Fruit Fly, and Glommer. This will also prevent players from attacking beefalo that belong to a player.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "reveal_follower_item",
+        label = "Reveal Follower Items",
+        hover = "If Enabled, the follower items for the above mobs will be always revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Finder Icon"),
+    Title("=============================="),
+    {
+        name = "brightshade_finder",
+        label = "Enable Finder",
+        hover = "If Enabled, Deadly Brightshades and Lureplants will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Storable Souls and Embers"),
+    Title("=============================="),
+    {
+        name = "storable_souls",
+        label = "Enable Storage",
+        hover = "If Enabled, Wortox's Souls and Willow's Embers can be stored in containers.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    Title("=============================="),
     Title("Balatro Prizes"),
     Title("=============================="),
+    {
+        name = "burn_cards",
+        label = "Cards Burnable",
+        hover = "If Enabled, single cards and a deck of cards can be burned for ash. Single cards can be used as fuel.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
     {
         name = "killerbee_count",
         label = "Add Bees",

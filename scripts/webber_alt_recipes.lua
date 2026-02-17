@@ -42,7 +42,26 @@ return function(AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTER
         SortRecipe("CHARACTER", altRecipeName, originalRecipeName)
     end
 
+    local function AddBulkHealingGlopRecipe(originalRecipeName, altRecipeName, bulkMultiplier)
+        AddRecipe2(altRecipeName,
+                   {
+                       Ingredient("honey", 2 * bulkMultiplier),
+                       Ingredient("ash", 2 * bulkMultiplier),
+                       Ingredient("silk", 2 * bulkMultiplier)
+                   },
+                   TECH.NONE,
+                   {
+                       product = originalRecipeName,
+                       numtogive = bulkMultiplier,
+                       builder_tag = "spiderwhisperer"
+                   }
+        )
+        SortRecipe("CHARACTER", altRecipeName, originalRecipeName)
+    end
+
     local bulkMultiplier = GetModConfigData("webber_bulk_count", "Map Tweak Utilities") or 10
+
+    AddBulkHealingGlopRecipe("spider_healer_item", "spider_healer_item_bulk", bulkMultiplier)
 
     -- AddBulkMutatorRecipe(originalRecipeName, altRecipeName, mutator, mutatorCount, bulkMultiplier)
     AddBulkMutatorRecipe("mutator_warrior", "mutator_warrior_bulk", "pigskin", 1, bulkMultiplier)

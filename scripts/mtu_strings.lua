@@ -12,12 +12,36 @@ return function(STRINGS)
     STRINGS.CHARACTERS.GENERIC.DESCRIBE.SLINGSHOT.NOT_MINE = "Oh, this isn't mine. I should leave it alone."
     -- added these for when the config option for extra wandering trader trades is set to true
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_MARBLES = "Careful not to shoot your eye out with this..."
+    STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_SLINGSHOTAMMO_MARBLE = "Careful not to shoot your eye out with this..."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_DUG_GRASS = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_DUG_SAPLING = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_DUG_BERRYBUSH = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_PINECONE = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_ACORN = "For your replanting needs."
     STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_BEDROLL_STRAW = "Sleep on the go, where ever you need to."
+    STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_SLINGSHOT = "For your on the go hunting needs."
+    STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_PORTABLEFIREPIT = "For all your lighting and heating needs while on the go."
+    STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_PORTABLECOLDFIREPIT = "For all your lighting and cooling needs while on the go."
+    STRINGS.RECIPE_DESC.WANDERINGTRADERSHOP_PORTABLETENT = "Sleep in comfort and style while on the go."
+    -- added these for the festive light recipes
+    local ornamentString = STRINGS.NAMES.WINTER_ORNAMENTLIGHT
+    local ornamentDesc = "Craft a tiny light of good cheer!"
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT1 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT2 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT3 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT4 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT5 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT6 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT7 = ornamentString
+    STRINGS.NAMES.WINTER_ORNAMENT_LIGHT8 = ornamentString
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT1 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT2 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT3 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT4 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT5 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT6 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT7 = ornamentDesc
+    STRINGS.RECIPE_DESC.WINTER_ORNAMENT_LIGHT8 = ornamentDesc
     -- balatro related strings
     local NEW_REWARD_STRINGS = {
         KILLERBEE = "KILLER BEES",
@@ -36,4 +60,11 @@ return function(STRINGS)
     STRINGS.BALATRO.JIMBO_NO_EXTRAS = "Oh, the boss says no extras for you. Too bad!"
     STRINGS.BALATRO.JIMBO_NO_CARDS = "Oh, the boss says no cards for you. Too bad!"
     STRINGS.BALATRO.JIMBO_NO_RECORD = "Oh, the boss says no record for you. Too bad!"
+    -- propsign strings
+    STRINGS.NAMES.PROPSIGN = "Prop Sign"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.PROPSIGN = "I shall use this in the name of violence!"
+    STRINGS.NAMES.PROPSIGN_ALT = "Prop Sign" -- recipe name
+    STRINGS.RECIPE_DESC.PROPSIGN_ALT = "Craft in the name of violence!"
+    STRINGS.NAMES.PROPSIGNBUNCH_ALT = "Bunch of Prop Signs"
+    STRINGS.RECIPE_DESC.PROPSIGNBUNCH_ALT = "Even more crafting in the name the violence!"
 end

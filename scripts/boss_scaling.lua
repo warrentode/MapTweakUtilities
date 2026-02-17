@@ -131,6 +131,37 @@ return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers,
         end)
     end
 
+    -- Lord Fruit Fly scaling
+    AddPrefabPostInit("lordfruitfly", function(inst)
+        if not TheWorld.ismastersim then
+            return
+        end
+        if not inst.components.lootdropper then
+            return
+        end
+
+        inst:ListenForEvent("death_ended", function()
+            local existing_count = #TheSim:FindEntities(0,0,0,9999,{"friendlyfruitfly"})
+
+            local lootdropper = inst.components.lootdropper
+
+            local eligible_players = GetEligiblePlayers(inst)
+            local player_count = #eligible_players
+            if player_count <= 0 then
+                return
+            end
+
+            local drop_count = math.min(player_count - existing_count, player_count)
+
+            if drop_count > 0 then
+                for _ = 1, drop_count do
+                    lootdropper:SpawnLootPrefab("fruitflyfruit")
+                end
+            end
+        end)
+    end)
+
+
     -- Worm mouth scaling
     if WORM_BOSS_MOUTH_MOD then
         AddPrefabPostInit("worm_boss", function(inst)

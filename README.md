@@ -22,9 +22,22 @@ Current list of features added:
 * Basic slingshot can be equipped by everyone
 * Portable campfires can be placed and picked up by everyone
 * Wandering Trader has extra trades
+* Walter specific items can be added to the trade pool if Slingshot and Portable Campfires for everyone are set to true
+* Wandering Trader has a toggable persistent icon for when extra trades are added 
 * Boss loot scaling with two scaling modes: "number of players logged in" or "number of players in range"
 * Item swiping protections: items cannot be stolen from player, rummaged, or picked/eaten off the ground by thief type mobs
 * Balatro rewards are now customizable with randomized loot tables
+* Toggable option to make cards burnable
+* Festive Lights now craftable, recipes unlocked during Winter's Feast
+* Alt recipes for Prop Signs, inspired by the Craftable Prop Sign mod - these are additional recipes and won't override the other mod with behavior kept intact
+* Toggable option to protect followers with follower items
+* Toggable option to always reveal these follower items on the map
+* Toggable option to store Wortox Souls and Willow Embers in chests
+* Toggable option to track location on map for the following: Deadly Brightshade and Lureplant
+* Support patch for when the MedKit mod is enabled: increases the list of vanilla items tagged that can be stored in it, prevents dropping from inventory when opened, and prevents perishing of any items stored inside it
+* Toggable option to haunt revival items out of any container
+* Toggable option to greatly increase the time dried foods last
+* Toggable option allowing extra storable items in the Picnic Casket
 
 ***
 If you like this mod, you can support my work by either subscribing or tipping in the following ways:

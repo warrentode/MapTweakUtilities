@@ -34,7 +34,7 @@ local function onpostdeploy(inst, fuel)
     end
 end
 
-local function onhit(inst, _)
+local function onhit(inst, worker)
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle", false)
     if inst.deploytask then
@@ -60,7 +60,7 @@ local function onupdatefueled(inst)
     inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
 end
 
-local function onfuelchange(newsection, _, inst, doer)
+local function onfuelchange(newsection, oldsection, inst, doer)
     if newsection <= 0 then
         inst.components.burnable:Extinguish()
         if inst.queued_charcoal then
@@ -85,16 +85,16 @@ local SECTION_STATUS = {
     [2] = "NORMAL",
 }
 
-local function getstatus(inst, _)
+local function getstatus(inst, viewer)
     local section = inst.components.fueled:GetCurrentSection()
     return SECTION_STATUS[section]
 end
 
-local function displaynamefn(_)
+local function displaynamefn(inst)
     return STRINGS.NAMES.PORTABLECOLDFIREPIT_ITEM
 end
 
-local function OnHaunt(inst, _)
+local function OnHaunt(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE and not inst.components.fueled:IsEmpty() then
         inst.components.fueled:DoDelta(TUNING.MED_FUEL)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -182,7 +182,7 @@ local function fn()
 end
 
 -- Deployable inventory item
-local function ondeploy(inst, pt, _)
+local function ondeploy(inst, pt, deployer)
     local firepit = SpawnPrefab("portablecoldfirepit")
     if firepit then
         firepit.Physics:SetCollides(false)

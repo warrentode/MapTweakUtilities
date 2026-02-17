@@ -1,0 +1,122 @@
+Credits to all the mod authors before me that I've learned from, were inspired by, or modified their code for this mod
+
+=======================================================================
+
+Balatro Settings
+
+* Buffed up Balatro machine by「Shadow」
+https://steamcommunity.com/sharedfiles/filedetails/?id=3463360853
+
+* Balatro Machine Reward Rewrite by tangying212
+https://steamcommunity.com/sharedfiles/filedetails/?id=3558365024
+
+* Flammable playing card by FraG$
+https://steamcommunity.com/sharedfiles/filedetails/?id=3465622389
+
+=======================================================================
+
+Batch Trading, Growth Cycling, Auto Stacking
+
+* Lag Remover by 长安
+https://steamcommunity.com/sharedfiles/filedetails/?id=3050607025
+
+=======================================================================
+
+Boss Loot Scaling
+
+* Tweaked Boss Scaling by Kareth
+https://steamcommunity.com/sharedfiles/filedetails/?id=2414579835
+
+* Many Friendly Fruit Flies by pbc (temiruya)
+https://steamcommunity.com/sharedfiles/filedetails/?id=2366304327
+
+=======================================================================
+
+No Swiping Settings
+
+* Don't Fumble by Bumber
+https://steamcommunity.com/sharedfiles/filedetails/?id=2852647301
+
+=======================================================================
+
+Starvation and Dock Tile Settings
+
+* mango_assistant by 青芒
+https://steamcommunity.com/sharedfiles/filedetails/?id=3455028857
+
+=======================================================================
+
+Follower Protection Settings
+
+* Friendly Fruit Fly QoL by Electroely
+https://steamcommunity.com/sharedfiles/filedetails/?id=2396207679
+
+* Unfreezable Friendly Fruit Fly by NebulaKKK
+https://steamcommunity.com/sharedfiles/filedetails/?id=2877074219
+
+* Invincible Chester & Hutch by XyozaxeR
+https://steamcommunity.com/sharedfiles/filedetails/?id=3417464441
+
+* Don't attack beefalo follower by MihmetCrido
+https://steamcommunity.com/sharedfiles/filedetails/?id=3025695264
+
+=======================================================================
+
+Map Icon Settings
+
+* Extended Map Icons Continued by I'm so HM02
+https://steamcommunity.com/sharedfiles/filedetails/?id=2905450407
+
+=======================================================================
+
+Medkits Mod Patch
+
+* Medkits by Leonardo Coxington
+https://steamcommunity.com/sharedfiles/filedetails/?id=2812739628
+
+* Ultimate Backpack Settings by ✿ N A B I ✿
+https://steamcommunity.com/sharedfiles/filedetails/?id=1242915898
+
+=======================================================================
+
+Removable Graves
+
+* Your Grave 1.1.2 by 小开心
+https://steamcommunity.com/sharedfiles/filedetails/?id=1415944016
+
+=======================================================================
+
+Wandering Trader Extra Trades
+
+* Log Friend! by Miss Misery
+https://steamcommunity.com/sharedfiles/filedetails/?id=3096969640
+
+=======================================================================
+
+Worm Boss Mouth Patch
+
+* Giant Worm Can Dig Wormhole by A Midas, Please
+https://steamcommunity.com/sharedfiles/filedetails/?id=3474047377
+
+=======================================================================
+
+Prop Signs
+
+* Craftable Prop Signs! by thegreatmanagement
+https://steamcommunity.com/sharedfiles/filedetails/?id=2889251638
+
+=======================================================================
+
+Storable Souls and Embers
+
+* 灵魂/余烬可以放箱子 by 拆家小能手
+https://steamcommunity.com/sharedfiles/filedetails/?id=3213385590
+
+=======================================================================
+
+Chef Pouch Settings
+
+* Ultimate Perish Settings by ✿ N A B I ✿
+https://steamcommunity.com/sharedfiles/filedetails/?id=1242907291
+
+=======================================================================

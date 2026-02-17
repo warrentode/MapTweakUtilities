@@ -1,5 +1,25 @@
+2.3.0:
+* Added recipes for the Festive Lights, available to unlock during Winter's Feast
+* Added alt recipes for the Prop Signs - crafted any one of the new year shrines with luck gold nuggets
+* Fixed the batch trading overriding my bird cage mod's special handling of the infused moon glass
+* Added configurable persistent minimap icon for the wandering trader if his alt trades are enabled
+* Updated trades for Wandering Trader, adding some new ones while also making some conditional based on other config settings
+* Added toggable option to protect followers with follower items
+* Added toggable option to always reveal these items on the map
+* Friendly Fruit Fly Fruit drop is now scaled with the boss scaling feature
+* Sucessfully moved balatro settings logic to its own file
+* Fixed Balatro rewards only being set on map load, now rerolls the rewards each time a game is played
+* Added bulk recipe for Webber's healing item
+* Fixed alt gift wrap recipe showing up in New Year Event crafting filter
+* Added toggable option to store souls and embers in containers
+* Patched Haunt action to drop revival items from any container
+* Set the mod loading priority to -9999 to ensure the mod loads after other mods for compat settings
+* Added patch to make Balatro cards burnable
+* Added insects to icebox storable when the Ultimate Perish Settings Mod is loaded and configured to store small creatures
+* Added toggable option for increasing the perish time on dried foods to twice the super slow perish time
+* Added toggable option to allow additional storable items in the picnic casket
 2.2.0:
-* Added customization options for the Balatro machine
+* Added customization options for the Balatro machine with randomized loot tables
 2.1.3:
 * Patched the scaled boss loot so it's injected into the vanilla loot pool instead of replacing it
 * Patched the player count tracking for the "By Players Logged In" scaling mode so it's not shard based

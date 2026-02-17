@@ -1,7 +1,8 @@
 -- custom settings for batch trading
 
-return function(AddPrefabPostInit, ACTIONS, config)
+return function(AddPrefabPostInit, ACTIONS, KnownModIndex, config)
     local BATCH_TRADES_ENABLED = config.BATCH_TRADES_ENABLED
+    local MY_BIRDCAGE_MOD = KnownModIndex:IsModEnabled("workshop-3593002597")
 
     -- Rewrite the given action.
     local old_give_fn = ACTIONS.GIVE.fn
@@ -20,9 +21,15 @@ return function(AddPrefabPostInit, ACTIONS, config)
             end
             -- Quantity of items given
             local count = (act.invobject and act.invobject.components and act.invobject.components.stackable) and act.invobject.components.stackable:StackSize() or 1
-            -- Special items can only be given out one at a time, such as the golden belt; you can't give out 10 of them in a single event.
-            if act.invobject.prefab == "pig_token" or act.invobject.prefab == "moonglass_charged" then
-                count = 1
+            -- Special items limited to 1 per trade
+            if MY_BIRDCAGE_MOD then
+                -- only limit the pig token if my birdcage mod is loaded too
+                if act.invobject.prefab == "pig_token" then
+                    count = 1
+                -- otherwise limit both
+                elseif act.invobject.prefab == "pig_token" or act.invobject.prefab == "moonglass_charged" then
+                    count = 1
+                end
             end
             act.target.components.trader:AcceptGift(act.doer, act.invobject, count)
             return true

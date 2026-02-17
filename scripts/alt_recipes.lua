@@ -27,12 +27,12 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         return filters
     end
 
-    local function SortRecipe(tab, altRecipeName, originalRecipeName)
+    local function SortRecipe(tab, altRecipeName, followedRecipe)
         local FILTERS = CRAFTING_FILTERS[tab]
-        if originalRecipeName == nil then
+        if followedRecipe == nil then
             AddRecipeToFilter(altRecipeName, tab)
         else
-            table.insert(FILTERS.recipes, FILTERS.default_sort_values[originalRecipeName] + 1, altRecipeName)
+            table.insert(FILTERS.recipes, FILTERS.default_sort_values[followedRecipe] + 1, altRecipeName)
             FILTERS.default_sort_values = table.invert(FILTERS.recipes)
         end
     end
@@ -112,7 +112,6 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     AddAltRecipe("turf_grass", "turf_grass_alt1", {{"cutgrass", 1}, {"petals_dried", 1}})
     AddAltRecipe("lighter", "lighter_alt1", {{"rope", 1}, {"goldnugget", 1}, {"petals_dried", 3}})
     AddAltRecipe("wx78module_maxsanity1", "wx78module_maxsanity1_alt1", {{"rope", 1}, {"goldnugget", 1}, {"petals_dried", 3}})
-    AddAltRecipe("giftwrap", "giftwrap_alt1", {{"papyrus", 1}, {"petals_dried", 1}})
 
     -- single alt recipes for dark petals
     AddAltRecipe("nightmarefuel", "nightmarefuel_alt1", {{"petals_evil_dried", 4}})
@@ -162,6 +161,19 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         end
     end
 
+    AddRecipe2("giftwrap_alt1",
+               {
+                   Ingredient("papyrus", 1),
+                   Ingredient("petals_dried", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "giftwrap",
+                   numtogive = 4,
+                   hint_msg = "NEEDSWINTERS_FEAST"
+               }
+    )
+    SortAltRecipeSpecial("giftwrap_alt1", "giftwrap")
     AddRecipe2("bathbomb_alt1",
                {
                    Ingredient("moon_tree_blossom_dried", 1),
@@ -207,4 +219,157 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     )
     SortAltRecipeSpecial("halloween_experiment_moon_alt1", "halloween_experiment_moon")
 
+    ----- MAKE ALT PROPSIGN RECIPES -----
+    AddRecipe2("propsign_alt",
+               {
+                   Ingredient("lucky_goldnugget", 1)
+               },
+               TECH.PERDOFFERING_ONE,
+               {
+                   nounlock = true,
+                   no_deconstruction = true,
+                   numtogive = 1,
+                   product = "propsign",
+                   description = "PROPSIGN_ALT",
+                   actionstr = "PERDOFFERING"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("propsignbunch_alt",
+               {
+                   Ingredient("lucky_goldnugget", 10)
+               },
+               TECH.PERDOFFERING_ONE,
+               {
+                   nounlock = true,
+                   no_deconstruction = true,
+                   numtogive = 10,
+                   product = "propsign",
+                   description = "PROPSIGNBUNCH_ALT",
+                   actionstr = "PERDOFFERING"
+               },
+               {"SPECIAL_EVENT"}
+    )
+
+    ----- MAKE FESTIVE LIGHTS CRAFTABLE -----
+    AddRecipe2("winter_ornament_light1",
+               {
+                   Ingredient("messagebottleempty", 1),
+                   Ingredient("spore_medium", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light1",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light1.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light5",
+               {
+                   Ingredient("saltrock", 1),
+                   Ingredient("ash", 4),
+                   Ingredient("moonglass", 3),
+                   Ingredient("spore_medium", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light5",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light5.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light2",
+               {
+                   Ingredient("messagebottleempty", 1),
+                   Ingredient("spore_small", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light2",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light2.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light6",
+               {
+                   Ingredient("saltrock", 1),
+                   Ingredient("ash", 4),
+                   Ingredient("moonglass", 3),
+                   Ingredient("spore_small", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light6",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light6.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light3",
+               {
+                   Ingredient("messagebottleempty", 1),
+                   Ingredient("spore_tall", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light3",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light3.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light7",
+               {
+                   Ingredient("saltrock", 1),
+                   Ingredient("ash", 4),
+                   Ingredient("moonglass", 3),
+                   Ingredient("spore_tall", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light7",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light7.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light4",
+               {
+                   Ingredient("messagebottleempty", 1),
+                   Ingredient("lightbulb", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light4",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light4.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
+    AddRecipe2("winter_ornament_light8",
+               {
+                   Ingredient("saltrock", 1),
+                   Ingredient("ash", 4),
+                   Ingredient("moonglass", 3),
+                   Ingredient("lightbulb", 1)
+               },
+               TECH.WINTERS_FEAST,
+               {
+                   product = "winter_ornament_light8",
+                   numtogive = 1,
+                   hint_msg = "NEEDSWINTERS_FEAST",
+                   image = "winter_ornament_light8.tex"
+               },
+               {"SPECIAL_EVENT"}
+    )
 end
