@@ -1,6 +1,6 @@
 -- custom boss loot scaling logic
 
-return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport, KnownModIndex)
+return function(MTU, modEnabled, config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport)
     -- Import boss loot table
     modimport "scripts/boss_loot.lua"
 
@@ -15,7 +15,7 @@ return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers,
     local AllPlayers = AllPlayers or {}
 
     -- check for worm boss mouth mod loaded
-    local WORM_BOSS_MOUTH_MOD = KnownModIndex:IsModEnabled("workshop-3474047377")
+    local WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377")
 
     -- Update eligible players list on join/leave
     local function UpdatePlayers(_, _)
@@ -78,8 +78,7 @@ return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers,
                     local chance = (i <= minimum_drop) and 1.0 or 0.40
                     new_loot[#new_loot + 1] = {item.name, chance}
                 end
-
-                -- Non-scaled items
+            -- Non-scaled items
             else
                 local chance = item.chance or 1.0
                 for _ = 1, item.count do
@@ -161,6 +160,48 @@ return function(MTU, config, GetSharedLootTable, SetSharedLootTable, AllPlayers,
         end)
     end)
 
+    -- Dragonfly scaling
+    local COFFEE_MOD = modEnabled("workshop-2334209327") or modEnabled("workshop-1467214795") or modEnabled("workshop-3573989143") or modEnabled("workshop-3628284418")
+    if COFFEE_MOD then
+        print("COFFEE_MOD: ", COFFEE_MOD)
+        AddPrefabPostInit("dragonfly", function(inst)
+            if not TheWorld.ismastersim then
+                return
+            end
+
+            inst:ListenForEvent("death", function()
+                local lootdropper = inst.components.lootdropper
+                if not lootdropper then
+                    return
+                end
+
+                local eligible_players = GetEligiblePlayers(inst)
+                local player_count = math.max(0, #eligible_players - 1)
+
+                local base_drop = 4 + player_count
+                local extra_drop = player_count
+
+                for _ = 1, base_drop do
+                    -- these mods don't add the bush and/or don't retrofit the bush into the world, so we add the base 4 drop plus the bonus extras
+                    if modEnabled("workshop-1467214795") or modEnabled("workshop-3573989143") then
+                        print("adding dug_coffeebush to loot")
+                        lootdropper:SpawnLootPrefab("dug_coffeebush")
+                    elseif modEnabled("workshop-3628284418") then
+                        print("adding mod_dug_coffeebush to loot")
+                        lootdropper:SpawnLootPrefab("mod_dug_coffeebush")
+                    end
+                end
+
+                for _ = 1, extra_drop do
+                    -- heap of foods already adds 4 bushes to the drop so we just add the bonus extras
+                    if modEnabled("workshop-2334209327") then
+                        print("adding dug_kyno_coffeebush to loot")
+                        lootdropper:SpawnLootPrefab("dug_kyno_coffeebush")
+                    end
+                end
+            end)
+        end)
+    end
 
     -- Worm mouth scaling
     if WORM_BOSS_MOUTH_MOD then

@@ -10,7 +10,7 @@ See README for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/README.md
 ]]
 author = "ToadieOdie"
-version = "2.3.0"
+version = "2.4.0"
 
 api_version = 10
 
@@ -34,6 +34,48 @@ local function Title(title)
 end
 
 configuration_options = {
+    Title("=============================="),
+    Title("Charcoal Pit Settings"),
+    Title("=============================="),
+    {
+        name = "ash1_chance",
+        label = "First Ash Drop",
+        hover = "Percentage chance that the first ash will drop when the pit finishes burning. 0 = never, 100% = always.",
+        options = {
+            {description = "0%", data = 0},
+            {description = "25%", data = 0.25},
+            {description = "50%", data = 0.50},
+            {description = "75%", data = 0.75},
+            {description = "100%", data = 1},
+        },
+        default = 1,
+    },
+    {
+        name = "ash2_chance",
+        label = "Second Ash Drop",
+        hover = "Percentage chance that the second ash will drop when the pit finishes burning. 0 = never, 100% = always.",
+        options = {
+            {description = "0%", data = 0},
+            {description = "25%", data = 0.25},
+            {description = "50%", data = 0.50},
+            {description = "75%", data = 0.75},
+            {description = "100%", data = 1},
+        },
+        default = 0.50,
+    },
+    Title("=============================="),
+    Title("Perishable Disguise Settings"),
+    Title("=============================="),
+    {
+        name = "disguise_perish",
+        label = "Disguises Non-Perishable",
+        hover = "If Enabled, the Wraith's Wreath and Clever Disguise will no longer perish. (Shamlet Mask is not added with this mod, but it is accounted for the best I can.)",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
     Title("=============================="),
     Title("Picnic Casket Settings"),
     Title("=============================="),
@@ -97,7 +139,7 @@ configuration_options = {
         name = "spicepack_perish_mult",
         label = "Set Perish Multiplier",
         hover = "Set the perish multiplier.",
-        {
+        options = {
             {description = "No Change", data = 1},
             {description = "x2 Slower", data = 0.5},
             {description = "x4 Slower", data = 0.25},
@@ -424,8 +466,18 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
-    Title("Webber Recipe Settings"),
+    Title("Webber Settings"),
     Title("=============================="),
+    {
+        name = "allow_spiders_bin",
+        label = "Allow Spiders in Bin",
+        hover = "If set to Yes, spiders become storable inside the Polar Bearger Bin. WARNING: with the right mod combo, you can carry an entire army on you with this. Set with discretion.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
     {
         name = "allow_webber_bulk",
         label = "Allow Alt Webber Recipes",
@@ -625,8 +677,58 @@ configuration_options = {
     Title("=============================="),
     {
         name = "brightshade_finder",
-        label = "Enable Finder",
-        hover = "If Enabled, Deadly Brightshades and Lureplants will always be revealed on the map.",
+        label = "Brightshade Finder",
+        hover = "If Enabled, Deadly Brightshades will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "lureplant_finder",
+        label = "Lureplant Finder",
+        hover = "If Enabled, Lureplants will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "deer_finder",
+        label = "Deer Finder",
+        hover = "If Enabled, No-Eyed Deer will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "mandrake_finder",
+        label = "Mandrake Finder",
+        hover = "If Enabled, Planted Mandrake will always be shown on the map once discovered. If the Mandrake Respawn mod is loaded with this Enabled, they will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "wall_finder",
+        label = "Wall Icon",
+        hover = "If Enabled, walls will always be shown on the map once discovered.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "marble_finder",
+        label = "Suspicious Marble Icon",
+        hover = "If Enabled, Suspicious Marble pieces will always be shown on the map once discovered.",
         options = {
             {description = "Disabled", data = false},
             {description = "Enabled", data = true},
@@ -658,6 +760,39 @@ configuration_options = {
             {description = "Disable", data = false},
         },
         default = false,
+    },
+    {
+        name = "drop_cards",
+        label = "Drop Cards",
+        hover = "Set whether to drop the cards or not.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = true,
+    },
+    {
+        name = "drop_record",
+        label = "Drop Record",
+        hover = "Set whether to drop the record or not.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = true,
+    },
+    {
+        name = "drop_horseshoe",
+        label = "Drop Lucky Horseshoe",
+        hover = "Set whether to drop the Lucky Horseshoe from the card and record loot pools or not.",
+        options = {
+            {description = "No Drop", data = 0},
+            {description = "25% Chance", data = 0.25},
+            {description = "50% Chance", data = 0.5},
+            {description = "75% Chance", data = 0.75},
+            {description = "100% Chance", data = 1},
+        },
+        default = 0,
     },
     {
         name = "killerbee_count",
@@ -1117,7 +1252,7 @@ configuration_options = {
     {
         name = "tier5_drop_count",
         label = "Tier 5 Drop Count",
-        hover = "Total number of items dropped from the tier 5 loot table. Tier 6 is the same loot but double this count. Tier 7 loot is different, but uses the Tier 6 count +2.",
+        hover = "Total number of items dropped from the tier 5 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -1217,6 +1352,45 @@ configuration_options = {
             {description = "1", data = 1},
         },
         default = 0,
+    },
+    {
+        name = "tier6_drop_count",
+        label = "Tier 6 Drop Count",
+        hover = "Total number of items dropped from the tier 6 loot table. Setting all Tier 6 reward options to 0 means the Tier 5 rewards will be used.",
+        options = {
+            {description = "4", data = 4},
+            {description = "6", data = 6},
+            {description = "8", data = 8},
+            {description = "10", data = 10},
+            {description = "12", data = 12},
+        },
+        default = 4,
+    },
+    {
+        name = "plant_chance",
+        label = "Vanilla Plants Weight",
+        hover = "Added to Tier 6, with each plant sharing the same weighted chance.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "tier7_drop_count",
+        label = "Tier 7 Drop Count",
+        hover = "Total number of items dropped from the tier 7 loot table.",
+        options = {
+            {description = "8", data = 8},
+            {description = "12", data = 12},
+            {description = "16", data = 16},
+            {description = "20", data = 20},
+            {description = "24", data = 24},
+        },
+        default = 8,
     },
     {
         name = "redgem_chance",
@@ -1323,23 +1497,94 @@ configuration_options = {
         default = 0,
     },
     {
-        name = "drop_cards",
-        label = "Drop Cards",
-        hover = "Set whether to drop the cards or not.",
+        name = "horrorfuel_chance",
+        label = "Pure Horror Weight",
+        hover = "Added to Tier 7.",
         options = {
-            {description = "YES", data = true},
-            {description = "NO", data = false},
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
         },
-        default = true,
+        default = 0,
     },
     {
-        name = "drop_record",
-        label = "Drop Record",
-        hover = "Set whether to drop the record or not.",
+        name = "dreadstone_chance",
+        label = "Dreadstone Weight",
+        hover = "Added to Tier 7.",
         options = {
-            {description = "YES", data = true},
-            {description = "NO", data = false},
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
         },
-        default = true,
+        default = 0,
+    },
+    {
+        name = "alterguardianhatshard_chance",
+        label = "Enlightened Shard Weight",
+        hover = "Added to Tier 7.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "purebrilliance_chance",
+        label = "Pure Brilliance Weight",
+        hover = "Added to Tier 7.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "lunarplant_husk_chance",
+        label = "Brightshade Husk Weight",
+        hover = "Added to Tier 7.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "coolant_chance",
+        label = "Nucleation Fluid Weight",
+        hover = "Added to Tier 7.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "minotaurhorn_chance",
+        label = "Guardian's Horn Weight",
+        hover = "Added to Tier 7.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
     }
 }

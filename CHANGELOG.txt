@@ -1,3 +1,18 @@
+2.4.0:
+* Added charcoal pit from the "Additional Structures - Updated" mod and fixed the behavior of the machine
+* medkit patch now makes it stay inside the inventory when opened and auto closes when the player moves like it's supposed to
+* expanded balatro rewards and adjusted the drop count configs
+* added toggable option to prevent disguises from perishing, includes support for disguisehat ported from DS:Hamlet
+* added tags for automatic chest sorter mods
+* added wall structure map icon to always show once discovered
+* added coffee plants to dragonfly loot for boss scaling
+* added the fresh versions of the dried leaves to crockpot ingredient list that weren't already added
+* added snowball as a frozen ingredient to the crockpot
+* edited the winter ornament light recipes to be the same for each color
+* patched the dug_coffee bush from the "Coffee in the Fumaroles" mod to be placeable on the same tiles as the Sproutrock tree
+* added configurable chance for Lucky Horseshoe to drop from Balatro Machine
+2.3.1:
+* Fixed crash related to dried food perish time
 2.3.0:
 * Added recipes for the Festive Lights, available to unlock during Winter's Feast
 * Added alt recipes for the Prop Signs - crafted any one of the new year shrines with luck gold nuggets

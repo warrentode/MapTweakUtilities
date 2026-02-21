@@ -16,12 +16,26 @@ end
 
 PrefabFiles = {
     "portablecoldfirepit",
-    "willow_ember"
+    "willow_ember",
+    "charcoal_pit",
 }
 
----------- CUSTOM PREFAB RECIPES ----------
+Assets = {
+    Asset("ATLAS", "images/inventoryimages/charcoal_pit.xml"),
+    Asset("ATLAS", "minimap/charcoal_pit.xml"),
+    Asset("ATLAS", "images/icons.xml"),
+    Asset("IMAGE", "images/icons.tex"),
+}
+
+AddMinimapAtlas("images/inventoryimages/charcoal_pit.xml")
+AddMinimapAtlas("images/icons.xml")
+AddMinimapAtlas("images/inventoryimages.xml")
+AddMinimapAtlas("images/inventoryimages1.xml")
+AddMinimapAtlas("images/inventoryimages2.xml")
+AddMinimapAtlas("images/inventoryimages3.xml")
 
 AddRecipe2("portablecoldfirepit_item", {Ingredient("nitre", 3), Ingredient("rope", 1), Ingredient("rocks", 4)}, TECH.NONE, {product = "portablecoldfirepit_item", image = "portablefirepit_item.tex", builder_skill = "walter_camp_fire"}, {"CHARACTER"})
+AddRecipe2("charcoal_pit", {Ingredient("cutstone", 2), Ingredient("charcoal", 8), Ingredient("rocks", 12)}, TECH.SCIENCE_ONE, {placer = "charcoal_pit_placer", atlas = "images/inventoryimages/charcoal_pit.xml", image = "charcoal_pit.tex"}, {"REFINE"})
 
 ---------- GLOBAL CONSTANTS ----------
 
@@ -46,6 +60,11 @@ AddSimPostInit(function()
     -- Periodic correction in case of shard transfers / reconnects
     TheWorld:DoPeriodicTask(5, UpdatePlayersLoaded)
 end)
+
+-- globabl boolean check for other mods, should make my life easier
+function modEnabled(modID)
+    return KnownModIndex:IsModEnabled(modID)
+end
 
 ---------- CONFIG BASED CONSTANTS ----------
 
@@ -107,11 +126,15 @@ local balatro_config = {
     BURN_CARDS = GetModConfigData("burn_cards"),
     DROP_CARDS = GetModConfigData("drop_cards"),
     DROP_RECORD = GetModConfigData("drop_record"),
+    DROP_HORSESHOE = GetModConfigData("drop_horseshoe"),
     TIER1_DROP_COUNT = GetModConfigData("tier1_drop_count") or 2,
     TIER2_DROP_COUNT = GetModConfigData("tier2_drop_count") or 2,
     TIER3_DROP_COUNT = GetModConfigData("tier3_drop_count") or 2,
     TIER4_DROP_COUNT = GetModConfigData("tier4_drop_count") or 2,
     TIER5_DROP_COUNT = GetModConfigData("tier5_drop_count") or 2,
+    TIER6_DROP_COUNT = GetModConfigData("tier6_drop_count") or 4,
+    TIER7_DROP_COUNT = GetModConfigData("tier7_drop_count") or 8,
+    INCLUDE_KRAMPUS = GetModConfigData("include_krampus") or false,
     killerbee = GetModConfigData("killerbee_count"),
     hound = GetModConfigData("hound_count"),
     spider = GetModConfigData("spider_count"),
@@ -157,7 +180,15 @@ local balatro_config = {
     orangegem = GetModConfigData("orangegem_chance"),
     greengem = GetModConfigData("greengem_chance"),
     opalpreciousgem = GetModConfigData("opalpreciousgem_chance"),
-    thulecite = GetModConfigData("thulecite_chance")
+    thulecite = GetModConfigData("thulecite_chance"),
+    plants = GetModConfigData("plant_chance"),
+    horrorfuel = GetModConfigData("horrorfuel_chance"),
+    dreadstone = GetModConfigData("dreadstone_chance"),
+    alterguardianhatshard = GetModConfigData("alterguardianhatshard_chance"),
+    purebrilliance = GetModConfigData("purebrilliance_chance"),
+    lunarplant_husk = GetModConfigData("lunarplant_husk_chance"),
+    coolant = GetModConfigData("coolant_chance"),
+    minotaurhorn = GetModConfigData("minotaurhorn_chance")
 }
 local medical_config = {
     MEDICAL_HAUNTING = GetModConfigData("medical_haunt") or false,
@@ -172,6 +203,14 @@ local spicepack_config = {
 local wendy_basket_config = {
     ALT_RECIPES_ALLOWED = GetModConfigData("allow_alt_recipes") or false
 }
+local icon_finder_config = {
+    BRIGHTSHADE_FINDER = GetModConfigData("brightshade_finder") or false,
+    LUREPLANT_FINDER = GetModConfigData("lureplant_finder") or false,
+    WALL_FINDER = GetModConfigData("wall_finder") or false,
+    MARBLE_FINDER = GetModConfigData("marble_finder") or false,
+    DEER_FINDER = GetModConfigData("deer_finder") or false,
+    MANDRAKE_FINDER = GetModConfigData("mandrake_finder") or false
+}
 
 local HOWLITZER_STACKSIZE = GetModConfigData("howlitzer_stacksize") or false
 local SLINGSHOT_EVERYONE = GetModConfigData("slingshot_everyone") or false
@@ -183,10 +222,11 @@ local LOOPING_WEEDS = GetModConfigData("looping_weeds") or false
 local REMOVABLE_GRAVE = GetModConfigData("remove_grave") or false
 local ALT_RECIPES_ALLOWED = GetModConfigData("allow_alt_recipes") or false
 local WEBBER_RECIPES_ALLOWED = GetModConfigData("allow_webber_bulk") or false
+local WEBBER_BIN = GetModConfigData("allow_spiders_bin") or false
 local WANDERINGTRADER_ALT_TRADES = GetModConfigData("wanderingtrader_alt_trades") or false
-local BRIGHTSHADE_FINDER = GetModConfigData("brightshade_finder") or false
 local STORABLE_SOULS = GetModConfigData("storable_souls") or false
 local INCREASE_DRIED_PERISH = GetModConfigData("dried_food_perish_time") or false
+local DISGUISE_NONPERISH = GetModConfigData("disguise_perish") or false
 
 local WORM_BOSS_MOUTH_MOD = KnownModIndex:IsModEnabled("workshop-3474047377")
 local PERISH_SETTINGS_MOD = KnownModIndex:IsModEnabled("workshop-1242907291")
@@ -209,20 +249,23 @@ local load_starvation = require("starvation_settings")
 load_starvation(AddPrefabPostInit, TUNING, starvation_config)
 
 local load_boss_scaling = require("boss_scaling")
-load_boss_scaling(MTU, boss_scaling_config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport, KnownModIndex)
+load_boss_scaling(MTU, modEnabled, boss_scaling_config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport)
 
 local load_follower_protections = require("protect_followers")
 load_follower_protections(TUNING, SetSharedLootTable, AddPrefabPostInit, follower_config)
 
 local load_balatro_settings = require("balatro_settings")
-load_balatro_settings(AddPrefabPostInit, TUNING, balatro_config)
+load_balatro_settings(AddPrefabPostInit, TUNING, modEnabled, balatro_config)
 
 local load_medical_settings = require("medical_settings")
 load_medical_settings(AddPrefabPostInit, ACTIONS, medical_config)
 
+local load_brightshade_finder = require("brightshade_finder")
+load_brightshade_finder(AddPrefabPostInit, modEnabled, icon_finder_config)
+
 if ALT_RECIPES_ALLOWED then
     local load_alt_recipes = require("alt_recipes")
-    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT)
+    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues)
 end
 if WEBBER_RECIPES_ALLOWED then
     local load_webber_alt_recipes = require("webber_alt_recipes")
@@ -243,10 +286,6 @@ end
 if NO_SWIPING then
     local load_no_swiping = require("no_swiping")
     load_no_swiping(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostInit, ACTIONS, EQUIPSLOTS, FRAMES, debug, no_swiping_config, modprint)
-end
-if BRIGHTSHADE_FINDER then
-    local load_brightshade_finder = require("brightshade_finder")
-    load_brightshade_finder(AddPrefabPostInit)
 end
 if EXTRA_BASKET_ITEMS then
     local load_basket_settings = require("wendy_basket_settings")
@@ -440,7 +479,134 @@ if INCREASE_DRIED_PERISH then
 
     for _, v in ipairs(dried_foods) do
         AddPrefabPostInit(v, function(inst)
-            inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW * 2)
+            if inst.components.perishable then
+                inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW * 2)
+            end
         end)
     end
+end
+
+---------- CUSTOM PATCH FOR SPIDER BIN STORAGE ----------
+
+if WEBBER_BIN then
+    local spider_list = {
+        "spider",
+        "spider_warrior",
+        "spider_hider",
+        "spider_spitter",
+        "spider_dropper",
+        "spider_moon",
+        "spider_healer",
+        "spider_water"
+    }
+
+    for _, v in ipairs(spider_list) do
+        AddPrefabPostInit(v, function(inst)
+            if not inst:HasTag("beargerfur_sack_valid") then
+                inst:AddTag("beargerfur_sack_valid")
+            end
+        end)
+    end
+end
+
+---------- CUSTOM PATCH FOR HAT PERISH TIME ----------
+
+if DISGUISE_NONPERISH then
+    local disguises = {
+        "ghostflowerhat",
+        "mermhat"
+    }
+
+    for _, v in ipairs(disguises) do
+        AddPrefabPostInit(v, function(inst)
+            if inst.components.perishable then
+                if inst:HasTag("show_spoilage") then
+                    inst:RemoveTag("show_spoilage")
+                    inst:AddTag("hide_percentage")
+                end
+                inst.components.perishable:StopPerishing()
+            end
+        end)
+    end
+
+    -- shamlet mask port mods that use the DS:Hamlet prefab name that give a durability of some kind
+    AddPrefabPostInit("disguisehat", function(inst)
+        if inst.components.fueled then
+            inst:RemoveComponent("fueled")
+        end
+        if inst.components.perishable then
+            if inst:HasTag("show_spoilage") then
+                inst:RemoveTag("show_spoilage")
+                inst:AddTag("hide_percentage")
+            end
+            inst.components.perishable:StopPerishing()
+        end
+    end)
+end
+
+---------- CUSTOM TAGGING FOR AUTO SORTING CHEST ----------
+
+if modEnabled("workshop-3232213331") or modEnabled("workshop-1932983865") then
+    local asc_fridges = {
+        "deep_freezer",
+    }
+
+    for _, v in ipairs(asc_fridges) do
+        AddPrefabPostInit(v, function(inst)
+            if not inst:HasTag("asc_fridge") then
+                inst:AddTag("asc_fridge")
+            end
+        end)
+    end
+
+    local asc_chests = {
+        "terrariumchest",
+        "wardrobe",
+        "greenbed"
+    }
+
+    for _, v in ipairs(asc_chests) do
+        AddPrefabPostInit(v, function(inst)
+            if not inst:HasTag("asc_chest") then
+                inst:AddTag("asc_chest")
+            end
+        end)
+    end
+end
+
+---------- CUSTOM PATCH FOR COFFEE IN THE FUMAROLES MOD ----------
+
+if modEnabled("workshop-3573989143") then
+    AddPrefabPostInit("dug_coffeebush", function(inst)
+        if not TheWorld.ismastersim then
+            return
+        end
+
+        -- Override the deployable check function
+        if inst.components.deployable then
+            inst.components.deployable._custom_candeploy_fn = function(inst, pt, _, _)
+                local x, y, z = pt:Get()
+                local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
+
+                -- Table of valid tiles (matching vanilla sproutrock)
+                local valid_tiles = {
+                    WORLD_TILES.VENT,
+                    WORLD_TILES.FUMAROLE,
+                    WORLD_TILES.VOLCANO
+                }
+
+                for _, valid_tile in ipairs(valid_tiles) do
+                    if tile == valid_tile then
+                        local spacing_radius = DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM]
+                        if inst.replica.inventoryitem then
+                            spacing_radius = inst.replica.inventoryitem:DeploySpacingRadius()
+                        end
+                        return TheWorld.Map:IsDeployPointClear(pt, inst, spacing_radius)
+                    end
+                end
+
+                return false
+            end
+        end
+    end)
 end

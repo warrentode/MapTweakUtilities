@@ -2,7 +2,7 @@
 
 return function(AddPrefabPostInit, ACTIONS, KnownModIndex, config)
     local BATCH_TRADES_ENABLED = config.BATCH_TRADES_ENABLED
-    local MY_BIRDCAGE_MOD = KnownModIndex:IsModEnabled("workshop-3593002597")
+    local MY_BIRDCAGE_MOD = KnownModIndex:IsModEnabled("workshop-3593002597") or KnownModIndex:IsModEnabled("Birdcage Settings")
 
     -- Rewrite the given action.
     local old_give_fn = ACTIONS.GIVE.fn
@@ -26,8 +26,10 @@ return function(AddPrefabPostInit, ACTIONS, KnownModIndex, config)
                 -- only limit the pig token if my birdcage mod is loaded too
                 if act.invobject.prefab == "pig_token" then
                     count = 1
+                end
+            else
                 -- otherwise limit both
-                elseif act.invobject.prefab == "pig_token" or act.invobject.prefab == "moonglass_charged" then
+                if act.invobject.prefab == "pig_token" or act.invobject.prefab == "moonglass_charged" then
                     count = 1
                 end
             end

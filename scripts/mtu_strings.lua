@@ -52,7 +52,9 @@ return function(STRINGS)
         REFINEDRESOURCES = "REFINED RESOURCES",
         SNACKS = "SNACKS",
         TREATS = "TREATS",
-        RARITIES = "RARITIES"
+        RARITIES = "RARITIES",
+        RARITIES2 = "RARITIES FROM THE BOSS",
+        PLANTS = "PLANTS"
     }
     for k,v in pairs(NEW_REWARD_STRINGS) do
         STRINGS.BALATRO.JIMBO_REWARD_TYPES[k] = v
@@ -60,6 +62,8 @@ return function(STRINGS)
     STRINGS.BALATRO.JIMBO_NO_EXTRAS = "Oh, the boss says no extras for you. Too bad!"
     STRINGS.BALATRO.JIMBO_NO_CARDS = "Oh, the boss says no cards for you. Too bad!"
     STRINGS.BALATRO.JIMBO_NO_RECORD = "Oh, the boss says no record for you. Too bad!"
+    STRINGS.BALATRO.JIMBO_LUCKY1 = "Oh, aren't you lucky today!"
+    STRINGS.BALATRO.JIMBO_LUCKY2 = "The boss must really like you!"
     -- propsign strings
     STRINGS.NAMES.PROPSIGN = "Prop Sign"
     STRINGS.CHARACTERS.GENERIC.DESCRIBE.PROPSIGN = "I shall use this in the name of violence!"
@@ -67,4 +71,15 @@ return function(STRINGS)
     STRINGS.RECIPE_DESC.PROPSIGN_ALT = "Craft in the name of violence!"
     STRINGS.NAMES.PROPSIGNBUNCH_ALT = "Bunch of Prop Signs"
     STRINGS.RECIPE_DESC.PROPSIGNBUNCH_ALT = "Even more crafting in the name the violence!"
+    -- charcoal pit
+    STRINGS.NAMES.CHARCOAL_PIT = "Charcoal Pit"
+    STRINGS.RECIPE_DESC.CHARCOAL_PIT = "Makes charcoal from logs."
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.CHARCOAL_PIT = "Smells like a small forest fire."
+    STRINGS.CHARACTERS.WILLOW.DESCRIBE.CHARCOAL_PIT = "What a nice smell."
+    STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CHARCOAL_PIT = "It make tiny dead trees."
+    STRINGS.CHARACTERS.WENDY.DESCRIBE.CHARCOAL_PIT = "A tree crematory."
+    STRINGS.CHARACTERS.WX78.DESCRIBE.CHARCOAL_PIT = "FIRE CONTAINMENT UNIT"
+    STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CHARCOAL_PIT = "A convenient way to make charcoal."
+    STRINGS.CHARACTERS.WOODIE.DESCRIBE.CHARCOAL_PIT = "Looking at it makes me sad."
+    STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CHARCOAL_PIT = "I prefer doing the job myself."
 end

@@ -57,7 +57,7 @@ return function(AddPrefabPostInit, ACTIONS, config)
             inst:AddComponent("preserver")
             inst.components.preserver:SetPerishRateMultiplier(0)
 
-            inst.components.container.droponopen = false
+            inst:AddTag("portablestorage")
 
             if inst and inst.components.burnable then
                 inst:RemoveComponent('burnable')

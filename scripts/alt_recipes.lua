@@ -1,6 +1,13 @@
 -- custom alt recipes for using dried leaves in place of the fresh counterparts
 
-return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT)
+return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues)
+    -- forgetmelots are already added as a filler, so we skip that
+    local freshLeaves = {"petals", "foliage", "succulent_picked", "firenettles", "tillweed", "moon_tree_blossom"}
+    AddIngredientValues(freshLeaves, {decoration = 1})
+    AddIngredientValues({"petals_evil"}, {decoration = 1, magic = 0.5})
+    -- we're adding this as only half the value of the ice
+    AddIngredientValues({"snowball_item"}, {frozen = 0.5})
+
     local function GetRecipeFilters(originalRecipeName)
         if not originalRecipeName or not AllRecipes[originalRecipeName] then
             return {"MODS"}  -- fallback if original recipe missing
@@ -252,124 +259,28 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     )
 
     ----- MAKE FESTIVE LIGHTS CRAFTABLE -----
-    AddRecipe2("winter_ornament_light1",
-               {
-                   Ingredient("messagebottleempty", 1),
-                   Ingredient("spore_medium", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light1",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light1.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light5",
-               {
-                   Ingredient("saltrock", 1),
-                   Ingredient("ash", 4),
-                   Ingredient("moonglass", 3),
-                   Ingredient("spore_medium", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light5",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light5.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light2",
-               {
-                   Ingredient("messagebottleempty", 1),
-                   Ingredient("spore_small", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light2",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light2.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light6",
-               {
-                   Ingredient("saltrock", 1),
-                   Ingredient("ash", 4),
-                   Ingredient("moonglass", 3),
-                   Ingredient("spore_small", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light6",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light6.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light3",
-               {
-                   Ingredient("messagebottleempty", 1),
-                   Ingredient("spore_tall", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light3",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light3.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light7",
-               {
-                   Ingredient("saltrock", 1),
-                   Ingredient("ash", 4),
-                   Ingredient("moonglass", 3),
-                   Ingredient("spore_tall", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light7",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light7.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light4",
-               {
-                   Ingredient("messagebottleempty", 1),
-                   Ingredient("lightbulb", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light4",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light4.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
-    AddRecipe2("winter_ornament_light8",
-               {
-                   Ingredient("saltrock", 1),
-                   Ingredient("ash", 4),
-                   Ingredient("moonglass", 3),
-                   Ingredient("lightbulb", 1)
-               },
-               TECH.WINTERS_FEAST,
-               {
-                   product = "winter_ornament_light8",
-                   numtogive = 1,
-                   hint_msg = "NEEDSWINTERS_FEAST",
-                   image = "winter_ornament_light8.tex"
-               },
-               {"SPECIAL_EVENT"}
-    )
+    local function AddWinterOrnamentLightRecipe(recipeName, colorItem)
+        AddRecipe2(recipeName,
+                   {
+                       Ingredient("messagebottleempty", 1),
+                       Ingredient(colorItem, 1)
+                   },
+                   TECH.WINTERS_FEAST,
+                   {
+                       product = recipeName,
+                       numtogive = 1,
+                       hint_msg = "NEEDSWINTERS_FEAST",
+                       image = recipeName..".tex"
+                   },
+                   {"SPECIAL_EVENT"}
+        )
+    end
+    AddWinterOrnamentLightRecipe("winter_ornament_light1", "spore_medium")
+    AddWinterOrnamentLightRecipe("winter_ornament_light5", "spore_medium")
+    AddWinterOrnamentLightRecipe("winter_ornament_light2", "spore_small")
+    AddWinterOrnamentLightRecipe("winter_ornament_light6", "spore_small")
+    AddWinterOrnamentLightRecipe("winter_ornament_light3", "spore_tall")
+    AddWinterOrnamentLightRecipe("winter_ornament_light7", "spore_tall")
+    AddWinterOrnamentLightRecipe("winter_ornament_light4", "lightbulb")
+    AddWinterOrnamentLightRecipe("winter_ornament_light8", "lightbulb")
 end
