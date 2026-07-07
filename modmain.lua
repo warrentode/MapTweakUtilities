@@ -57,11 +57,11 @@ AddSimPostInit(function()
     -- Initial population
     UpdatePlayersLoaded()
 
-    -- Periodic correction in case of shard transfers / reconnects
+    -- Periodic correction
     TheWorld:DoPeriodicTask(5, UpdatePlayersLoaded)
 end)
 
--- globabl boolean check for other mods, should make my life easier
+-- globabl boolean check for other mods
 function modEnabled(modID)
     return KnownModIndex:IsModEnabled(modID)
 end
@@ -110,6 +110,8 @@ local boss_scaling_config = {
 }
 local no_swiping_config = {
     ALLOW_SLURTLE_EATING = GetModConfigData("allow_slurtles") or false,
+    ALLOW_SPIDER_EATING = GetModConfigData("allow_spiders") or false,
+    ALLOW_PIG_EATING = GetModConfigData("allow_pigs") or false,
     ALLOW_WORM_BOSS_EATING = GetModConfigData("allow_worm_boss") or false
 }
 local trader_config = {
@@ -123,6 +125,8 @@ local follower_config = {
     REVEAL_FOLLOWERS = GetModConfigData("reveal_follower_item") or false
 }
 local balatro_config = {
+    WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377"),
+    ALLOW_LUCK = GetModConfigData("allow_luck"),
     BURN_CARDS = GetModConfigData("burn_cards"),
     DROP_CARDS = GetModConfigData("drop_cards"),
     DROP_RECORD = GetModConfigData("drop_record"),
@@ -188,11 +192,12 @@ local balatro_config = {
     purebrilliance = GetModConfigData("purebrilliance_chance"),
     lunarplant_husk = GetModConfigData("lunarplant_husk_chance"),
     coolant = GetModConfigData("coolant_chance"),
-    minotaurhorn = GetModConfigData("minotaurhorn_chance")
+    minotaurhorn = GetModConfigData("minotaurhorn_chance"),
+    boss_worm_mouth = GetModConfigData("worm_boss_mouth_chance")
 }
 local medical_config = {
     MEDICAL_HAUNTING = GetModConfigData("medical_haunt") or false,
-    MEDKIT_MOD = KnownModIndex:IsModEnabled("workshop-2812739628")
+    MEDKIT_MOD = modEnabled("workshop-2812739628")
 }
 local spicepack_config = {
     SPICEPACK_WATERPROOF = GetModConfigData("spicepack_waterproof") or false,
@@ -209,6 +214,7 @@ local icon_finder_config = {
     WALL_FINDER = GetModConfigData("wall_finder") or false,
     MARBLE_FINDER = GetModConfigData("marble_finder") or false,
     DEER_FINDER = GetModConfigData("deer_finder") or false,
+    PIPSPOOK_FINDER = GetModConfigData("pipspook_finder") or false,
     MANDRAKE_FINDER = GetModConfigData("mandrake_finder") or false
 }
 
@@ -228,8 +234,8 @@ local STORABLE_SOULS = GetModConfigData("storable_souls") or false
 local INCREASE_DRIED_PERISH = GetModConfigData("dried_food_perish_time") or false
 local DISGUISE_NONPERISH = GetModConfigData("disguise_perish") or false
 
-local WORM_BOSS_MOUTH_MOD = KnownModIndex:IsModEnabled("workshop-3474047377")
-local PERISH_SETTINGS_MOD = KnownModIndex:IsModEnabled("workshop-1242907291")
+local WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377")
+local PERISH_SETTINGS_MOD = modEnabled("workshop-1242907291")
 
 ---------- FEATURE FILES ----------
 
@@ -260,12 +266,12 @@ load_balatro_settings(AddPrefabPostInit, TUNING, modEnabled, balatro_config)
 local load_medical_settings = require("medical_settings")
 load_medical_settings(AddPrefabPostInit, ACTIONS, medical_config)
 
-local load_brightshade_finder = require("brightshade_finder")
-load_brightshade_finder(AddPrefabPostInit, modEnabled, icon_finder_config)
+local load_icon_finder = require("icon_finder")
+load_icon_finder(AddPrefabPostInit, modEnabled, icon_finder_config)
 
 if ALT_RECIPES_ALLOWED then
     local load_alt_recipes = require("alt_recipes")
-    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues)
+    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
 end
 if WEBBER_RECIPES_ALLOWED then
     local load_webber_alt_recipes = require("webber_alt_recipes")
@@ -507,6 +513,21 @@ if WEBBER_BIN then
             end
         end)
     end
+
+    local function IceboxStoreCreaturesActive()
+        local prefab = Prefabs["mole"]
+        return prefab and prefab.tags and table.contains(prefab.tags, "icebox_valid")
+    end
+
+    if IceboxStoreCreaturesActive then
+        for _, v in ipairs(spider_list) do
+            AddPrefabPostInit(v, function(inst)
+                if not inst:HasTag("icebox_valid") then
+                    inst:AddTag("icebox_valid")
+                end
+            end)
+        end
+    end
 end
 
 ---------- CUSTOM PATCH FOR HAT PERISH TIME ----------
@@ -514,11 +535,17 @@ end
 if DISGUISE_NONPERISH then
     local disguises = {
         "ghostflowerhat",
-        "mermhat"
+        "mermhat",
+        "disguisehat",
+        "beefalohat",
     }
 
     for _, v in ipairs(disguises) do
         AddPrefabPostInit(v, function(inst)
+            if not TheWorld.ismastersim then
+                return
+            end
+
             if inst.components.perishable then
                 if inst:HasTag("show_spoilage") then
                     inst:RemoveTag("show_spoilage")
@@ -526,20 +553,45 @@ if DISGUISE_NONPERISH then
                 end
                 inst.components.perishable:StopPerishing()
             end
+            if inst.components.fueled then
+                inst:RemoveComponent("fueled")
+            end
         end)
     end
 
-    -- shamlet mask port mods that use the DS:Hamlet prefab name that give a durability of some kind
-    AddPrefabPostInit("disguisehat", function(inst)
+    -- spiderhat specific patch
+    AddPrefabPostInit("spiderhat", function(inst)
+        if not TheWorld.ismastersim then
+            return
+        end
+
         if inst.components.fueled then
             inst:RemoveComponent("fueled")
         end
-        if inst.components.perishable then
-            if inst:HasTag("show_spoilage") then
-                inst:RemoveTag("show_spoilage")
-                inst:AddTag("hide_percentage")
+
+        local function safe_spider_update(inst)
+            local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
+            if owner and owner.components.leader then
+                owner.components.leader:RemoveFollowersByTag("pig")
+                local x, y, z = owner.Transform:GetWorldPosition()
+                local ents = TheSim:FindEntities(x, y, z, TUNING.SPIDERHAT_RANGE, "spider")
+                for _, v in pairs(ents) do
+                    local leader = v.components.follower and v.components.follower:GetLeader()
+                    if v.components.follower
+                            and not owner.components.leader:IsFollower(v)
+                            and owner.components.leader.numfollowers < 10
+                            and (not leader or not leader:HasTag("spiderwhisperer"))
+                    then
+                        owner.components.leader:AddFollower(v)
+                    end
+                end
             end
-            inst.components.perishable:StopPerishing()
+        end
+
+        inst._spider_update = safe_spider_update
+        if inst.updatetask then
+            inst.updatetask:Cancel()
+            inst.updatetask = inst:DoPeriodicTask(0.5, safe_spider_update, 1)
         end
     end)
 end
@@ -561,12 +613,20 @@ if modEnabled("workshop-3232213331") or modEnabled("workshop-1932983865") then
 
     local asc_chests = {
         "terrariumchest",
-        "wardrobe",
         "greenbed"
     }
 
     for _, v in ipairs(asc_chests) do
         AddPrefabPostInit(v, function(inst)
+            if not inst:HasTag("asc_chest") then
+                inst:AddTag("asc_chest")
+            end
+        end)
+    end
+
+    -- check if "Storage wardrobe" mod is enabled
+    if modEnabled("workshop-2794741028") then
+        AddPrefabPostInit("wardrobe", function(inst)
             if not inst:HasTag("asc_chest") then
                 inst:AddTag("asc_chest")
             end
@@ -578,6 +638,12 @@ end
 
 if modEnabled("workshop-3573989143") then
     AddPrefabPostInit("dug_coffeebush", function(inst)
+        inst:AddTag("bush")
+        inst:AddTag("plant")
+        inst:AddTag("renewable")
+        inst:AddTag("lunarplant_target")
+        inst:AddTag("volcanicplant")
+
         if not TheWorld.ismastersim then
             return
         end
@@ -606,6 +672,29 @@ if modEnabled("workshop-3573989143") then
                 end
 
                 return false
+            end
+        end
+
+        inst:WatchWorldState("season", OnSeasonChange)
+        OnSeasonChange(inst, TheWorld.state.season)
+
+        MakeSnowCovered(inst)
+        MakeNoGrowInWinter(inst)
+    end)
+end
+
+---------- CUSTOM WINTER COAT PATCH FOR PEARL FOR WHEN MORE EQUIP SLOTS+ IS LOADED ----------
+-- keep this patch here until the author of More Equip Slots+ adds it to their modmain
+if modEnabled("workshop-3372256873") then
+    AddPrefabPostInit("hermitcrab", function(inst)
+        if inst.iscoat then
+            inst.iscoat = function(item)
+                return item.components.insulator and
+                        item.components.insulator:GetInsulation() >= TUNING.INSULATION_SMALL and
+                        item.components.insulator:GetType() == SEASONS.WINTER and
+                        item.components.equippable and
+                        (item.components.equippable.equipslot == EQUIPSLOTS.BODY or
+                                item.components.equippable.equipslot == EQUIPSLOTS.SHIRT)
             end
         end
     end)

@@ -10,7 +10,7 @@ See README for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/README.md
 ]]
 author = "ToadieOdie"
-version = "2.4.0"
+version = "2.4.1"
 
 api_version = 10
 
@@ -640,6 +640,26 @@ configuration_options = {
         default = false,
     },
     {
+        name = "allow_spiders",
+        label = "Allow Spider Eating",
+        hover = "If Enabled, all spiders will be allowed to eat items on the ground when swiping protections are enabled.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "allow_pigs",
+        label = "Allow Pig Eating",
+        hover = "If Enabled, all pigs will be allowed to eat items on the ground when swiping protections are enabled.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
         name = "allow_worm_boss",
         label = "Allow Worm Boss Eating",
         hover = "If Enabled, the great depths worm will eat things normally when swiping protections are enabled.",
@@ -706,9 +726,19 @@ configuration_options = {
         default = false,
     },
     {
+        name = "pipspook_finder",
+        label = "Pipspook Finder",
+        hover = "If Enabled, Pipspook will always be revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
         name = "mandrake_finder",
         label = "Mandrake Finder",
-        hover = "If Enabled, Planted Mandrake will always be shown on the map once discovered. If the Mandrake Respawn mod is loaded with this Enabled, they will always be revealed on the map.",
+        hover = "If Enabled, Planted Mandrake will always be shown on the map once discovered. If the Mandrake Respawn mod is loaded with this Enabled, they will always be revealed.",
         options = {
             {description = "Disabled", data = false},
             {description = "Enabled", data = true},
@@ -751,6 +781,16 @@ configuration_options = {
     Title("=============================="),
     Title("Balatro Prizes"),
     Title("=============================="),
+    {
+        name = "allow_luck",
+        label = "Allow Luck to Effect Drop Counts",
+        hover = "If Enabled, the luck value of the player serves as a percentage chance for bonus drops equal to their luck value.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
     {
         name = "burn_cards",
         label = "Cards Burnable",
@@ -849,7 +889,7 @@ configuration_options = {
     {
         name = "tier1_drop_count",
         label = "Tier 1 Drop Count",
-        hover = "Total number of items dropped from the tier 1 loot table.",
+        hover = "Total base number of items dropped from the tier 1 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -940,7 +980,7 @@ configuration_options = {
     {
         name = "tier2_drop_count",
         label = "Tier 2 Drop Count",
-        hover = "Total number of items dropped from the tier 2 loot table.",
+        hover = "Total base number of items dropped from the tier 2 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -1070,7 +1110,7 @@ configuration_options = {
     {
         name = "tier3_drop_count",
         label = "Tier 3 Drop Count",
-        hover = "Total number of items dropped from the tier 3 loot table.",
+        hover = "Total base number of items dropped from the tier 3 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -1161,7 +1201,7 @@ configuration_options = {
     {
         name = "tier4_drop_count",
         label = "Tier 4 Drop Count",
-        hover = "Total number of items dropped from the tier 4 loot table.",
+        hover = "Total base number of items dropped from the tier 4 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -1252,7 +1292,7 @@ configuration_options = {
     {
         name = "tier5_drop_count",
         label = "Tier 5 Drop Count",
-        hover = "Total number of items dropped from the tier 5 loot table.",
+        hover = "Total base number of items dropped from the tier 5 loot table.",
         options = {
             {description = "2", data = 2},
             {description = "3", data = 3},
@@ -1265,7 +1305,7 @@ configuration_options = {
     {
         name = "goldnugget_chance",
         label = "Gold Nugget Weight",
-        hover = "Added to Tier 5 and Tier 6. Vanilla entry.",
+        hover = "Added to Tier 5. Vanilla entry.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1278,7 +1318,7 @@ configuration_options = {
     {
         name = "moonrocknugget_chance",
         label = "Moon Rock Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1291,7 +1331,7 @@ configuration_options = {
     {
         name = "gears_chance",
         label = "Gears Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1304,7 +1344,7 @@ configuration_options = {
     {
         name = "pigskin_chance",
         label = "Pig Skin Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1317,7 +1357,7 @@ configuration_options = {
     {
         name = "steelwool_chance",
         label = "Steel Wool Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1330,7 +1370,7 @@ configuration_options = {
     {
         name = "manrabbit_tail_chance",
         label = "Bunny Puff Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1343,7 +1383,20 @@ configuration_options = {
     {
         name = "slurper_pelt_chance",
         label = "Slurper Pelt Weight",
-        hover = "Added to Tier 5 and Tier 6.",
+        hover = "Added to Tier 5.",
+        options = {
+            {description = "0", data = 0},
+            {description = "0.25", data = 0.25},
+            {description = "0.5", data = 0.5},
+            {description = "0.75", data = 0.75},
+            {description = "1", data = 1},
+        },
+        default = 0,
+    },
+    {
+        name = "worm_boss_mouth_chance",
+        label = "Worm Boss Mouth Weight",
+        hover = "Added to Tier 5 if the mod is enabled.",
         options = {
             {description = "0", data = 0},
             {description = "0.25", data = 0.25},
@@ -1356,7 +1409,7 @@ configuration_options = {
     {
         name = "tier6_drop_count",
         label = "Tier 6 Drop Count",
-        hover = "Total number of items dropped from the tier 6 loot table. Setting all Tier 6 reward options to 0 means the Tier 5 rewards will be used.",
+        hover = "Total base number of items dropped from the tier 6 loot table. Setting all Tier 6 reward options to 0 means the Tier 5 rewards will be used.",
         options = {
             {description = "4", data = 4},
             {description = "6", data = 6},
@@ -1382,7 +1435,7 @@ configuration_options = {
     {
         name = "tier7_drop_count",
         label = "Tier 7 Drop Count",
-        hover = "Total number of items dropped from the tier 7 loot table.",
+        hover = "Total base number of items dropped from the tier 7 loot table.",
         options = {
             {description = "8", data = 8},
             {description = "12", data = 12},

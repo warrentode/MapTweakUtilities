@@ -1,6 +1,6 @@
 -- custom alt recipes for using dried leaves in place of the fresh counterparts
 
-return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues)
+return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
     -- forgetmelots are already added as a filler, so we skip that
     local freshLeaves = {"petals", "foliage", "succulent_picked", "firenettles", "tillweed", "moon_tree_blossom"}
     AddIngredientValues(freshLeaves, {decoration = 1})
@@ -46,9 +46,9 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
 
     local function AddAltRecipe(originalRecipeName, altRecipeName, ingredients)
         -- build ingredient table from input passed
-        local ingTable = {}
+        local ingredientTable = {}
         for _, v in ipairs(ingredients) do
-            table.insert(ingTable, Ingredient(v[1], v[2]))
+            table.insert(ingredientTable, Ingredient(v[1], v[2]))
         end
 
         -- grab tech dynamically from original recipe
@@ -94,7 +94,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
         -- grab filter dynamically from original recipe
         local tabs = GetRecipeFilters(originalRecipeName)
 
-        AddRecipe2(altRecipeName, ingTable, tech, recipeData)
+        AddRecipe2(altRecipeName, ingredientTable, tech, recipeData)
         if tabs and originalRecipeName then
             for _, tab in ipairs(tabs) do
                 SortRecipe(tab, altRecipeName, originalRecipeName)
@@ -226,6 +226,84 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     )
     SortAltRecipeSpecial("halloween_experiment_moon_alt1", "halloween_experiment_moon")
 
+    ----- ALT BOTTLE RECIPE AND SHELLWEAVER PATCH -----
+
+    AddRecipe2("shellweaver_messagebottleempty_alt",
+               {
+                   Ingredient("saltrock", 10),
+                   Ingredient("ash", 40),
+                   Ingredient("moonglass", 30)
+               },
+               TECH.SHELLWEAVER_ONE,
+               {
+                   nounlock = true,
+                   manufactured = true,
+                   actionstr = "SHELLWEAVER",
+                   product = "messagebottleempty",
+                   numtogive = 10
+               }
+    )
+    SortAltRecipeSpecial("shellweaver_messagebottleempty_alt", "shellweaver_messagebottleempty")
+
+    AddPrefabPostInit("shellweaver", function(inst)
+        if not TheWorld.ismastersim then
+            return
+        end
+
+        local productCount = 1
+
+        local function newStartMakingScience(inst, _, recipe)
+            if recipe.product ~= nil then
+                if recipe.numtogive then
+                    productCount = recipe.numtogive
+                else
+                    productCount = 1
+                end
+                inst.components.madsciencelab:StartMakingScience(recipe.product, recipe.name)
+                print("Combriner Crafting: ", recipe.name, " ", recipe.product, " ", productCount)
+            end
+        end
+
+        if inst.AddPrototyper then
+            local oldAddPrototyper = inst.AddPrototyper
+            inst.AddPrototyper = function(self)
+                oldAddPrototyper(self)
+                if self.components.prototyper then
+                    self.components.prototyper.onactivate = newStartMakingScience
+                end
+            end
+        end
+
+        local function newOnInactive(inst)
+            if not inst:HasTag("burnt") then
+                inst:RemoveEventCallback("animover", newOnInactive)
+                inst.AnimState:PlayAnimation("idle", true)
+                inst:AddPrototyper()
+            end
+        end
+
+        local function newOnScienceWasMade(inst, product)
+            if product then
+                local item = SpawnPrefab(product)
+                if item and item.components.stackable then
+                    item.components.stackable:SetStackSize(productCount)
+                end
+
+                local x, y, z = inst.Transform:GetWorldPosition()
+                LaunchAt(item, inst, FindClosestPlayer(x, y, z, true), 1, 2.5, 1)
+            end
+
+            inst.AnimState:PlayAnimation("cook_pst")
+            inst.SoundEmitter:KillSound("loop")
+            inst.SoundEmitter:PlaySound("winter2025/combriner/cook_pst")
+            inst:ListenForEvent("animover", newOnInactive)
+        end
+
+        inst.components.madsciencelab.OnScienceWasMade = function(inst, product)
+            newOnScienceWasMade(inst, product)
+        end
+    end)
+
     ----- MAKE ALT PROPSIGN RECIPES -----
     AddRecipe2("propsign_alt",
                {
@@ -270,7 +348,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
                        product = recipeName,
                        numtogive = 1,
                        hint_msg = "NEEDSWINTERS_FEAST",
-                       image = recipeName..".tex"
+                       image = recipeName .. ".tex"
                    },
                    {"SPECIAL_EVENT"}
         )

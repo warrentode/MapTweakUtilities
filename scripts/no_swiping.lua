@@ -2,6 +2,13 @@
 
 return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostInit, ACTIONS, EQUIPSLOTS, FRAMES, debug, config, modprint)
     local ALLOW_SLURTLE_EATING = config.ALLOW_SLURTLE_EATING
+    local ALLOW_SPIDER_EATING = config.ALLOW_SPIDER_EATING
+    local ALLOW_PIG_EATING = config.ALLOW_PIG_EATING
+    local PIG_TAGS = {
+        "pig",
+        "werepig",
+        "guard"
+    }
     local ALLOW_WORM_BOSS_EATING = config.ALLOW_WORM_BOSS_EATING
 
     local THIEF_PREFABS = {
@@ -18,6 +25,17 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
         "snurtle",
         "perd",
         "mole",
+        "spider",
+        "spider_warrior",
+        "spider_hider",
+        "spider_spitter",
+        "spider_dropper",
+        "spider_moon",
+        "spider_healer",
+        "spider_water",
+        "pigman",
+        "pigguard",
+        "moonpig"
     }
 
     -- Tag mobs as thieves
@@ -34,12 +52,32 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
         end)
     end
 
+    -- tag the pig types as pig_class
+    for _, prefab in ipairs(PIG_TAGS) do
+        AddPrefabPostInit(prefab, function(inst)
+            if not TheWorld.ismastersim then
+                return
+            end
+
+            -- Tag as thief if not already
+            if not inst:HasTag("pig_class") then
+                inst:AddTag("pig_class")
+            end
+        end)
+    end
+
     -- Override eat actions for tagged mobs
     local oldEatValid = ACTIONS.EAT.validfn
     ACTIONS.EAT.validfn = function(action)
         local doer = action.doer
         if doer then
             if ALLOW_SLURTLE_EATING and doer:HasTag("slurtle") then
+                return oldEatValid and oldEatValid(action) or true
+            end
+            if ALLOW_SPIDER_EATING and doer:HasTag("spider") then
+                return oldEatValid and oldEatValid(action) or true
+            end
+            if ALLOW_PIG_EATING and doer:HasTag("pig_class") then
                 return oldEatValid and oldEatValid(action) or true
             end
             if doer:HasTag("thief") then

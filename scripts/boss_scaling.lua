@@ -163,7 +163,6 @@ return function(MTU, modEnabled, config, GetSharedLootTable, SetSharedLootTable,
     -- Dragonfly scaling
     local COFFEE_MOD = modEnabled("workshop-2334209327") or modEnabled("workshop-1467214795") or modEnabled("workshop-3573989143") or modEnabled("workshop-3628284418")
     if COFFEE_MOD then
-        print("COFFEE_MOD: ", COFFEE_MOD)
         AddPrefabPostInit("dragonfly", function(inst)
             if not TheWorld.ismastersim then
                 return

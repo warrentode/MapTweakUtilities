@@ -18,9 +18,10 @@ return function(TUNING, SetSharedLootTable, AddPrefabPostInit, config)
             "lavae_pet",
             "beefalo",
             "cfe_chester",
+            "hermitcrab",
         }
 
-        SetSharedLootTable("lavae_coccon", {{"lavae_tooth", 1.00}})
+        SetSharedLootTable("lavae_coccon", {{"lavae_tooth", 1}})
 
         local function ReviveLavaePet(inst)
             if not TheWorld.ismastersim then
@@ -34,28 +35,16 @@ return function(TUNING, SetSharedLootTable, AddPrefabPostInit, config)
             inst.components.lootdropper:SetChanceLootTable("lavae_coccon")
         end
 
-        local function BeefaloCanBeAttackedByPlayer(inst, attacker)
-            if attacker ~= nil and attacker:HasTag("player") then
-                if inst.components.follower ~= nil and inst.components.follower.leader ~= nil then
-                    local leader = inst.components.follower.leader
-                    if leader:HasTag("bell") or leader:HasTag("shadowbell") then
-                        return false
-                    end
-                end
-            end
-            return true
-        end
-
         -- make chesters and hutches invincible
         TUNING.CHESTER_HEALTH = 99999
-        TUNING.CHESTER_RESPAWN_TIME = .1
+        TUNING.CHESTER_RESPAWN_TIME = 0.1
         TUNING.CHESTER_HEALTH_REGEN_AMOUNT = 99999
-        TUNING.CHESTER_HEALTH_REGEN_PERIOD = .1
+        TUNING.CHESTER_HEALTH_REGEN_PERIOD = 0.1
 
         TUNING.HUTCH_HEALTH = 99999
-        TUNING.HUTCH_RESPAWN_TIME = .1
+        TUNING.HUTCH_RESPAWN_TIME = 0.1
         TUNING.HUTCH_HEALTH_REGEN_AMOUNT = 99999
-        TUNING.HUTCH_HEALTH_REGEN_PERIOD = .1
+        TUNING.HUTCH_HEALTH_REGEN_PERIOD = 0.1
 
         local function ProtectMob(inst)
             if not TheWorld.ismastersim then
@@ -68,11 +57,11 @@ return function(TUNING, SetSharedLootTable, AddPrefabPostInit, config)
                 inst.Physics:ClearCollisionMask()
                 inst.Physics:CollidesWith(COLLISION.GROUND)
                 inst:AddTag("NOBLOCK")
-                -- remove freezing for each mob except the lavae_pet
-                if inst.components.freezable and inst.prefab ~= "lavae_pet" then
+                -- remove freezing
+                if inst.components.freezable then
                     inst:RemoveComponent("freezable")
                 end
-                -- remove freezing and burning
+                -- remove burning
                 if inst.components.burnable then
                     inst:RemoveComponent("burnable")
                 end
@@ -93,22 +82,72 @@ return function(TUNING, SetSharedLootTable, AddPrefabPostInit, config)
                 if not inst:HasTag("noauradamage") then
                     inst:AddTag("noauradamage")
                 end
-            else
-                -- set the beefalo specific protection
-                if inst.components.combat then
-                    inst.components.combat.CanBeAttacked = function(attacker)
-                        return BeefaloCanBeAttackedByPlayer(inst, attacker)
-                    end
-                end
             end
         end
 
         for _, prefab_name in ipairs(PROTECTED_MOBS) do
-            AddPrefabPostInit(prefab_name, ProtectMob)
+            if prefab_name ~= "beefalo" then
+                AddPrefabPostInit(prefab_name, ProtectMob)
+            end
             if prefab_name == "lavae_pet" then
                 AddPrefabPostInit("lavae_cocoon", ReviveLavaePet)
             end
+            if prefab_name == "beefalo" then
+                -- Patch beefalo to add/remove "noplayertarget" when a bell owner is assigned or removed
+                AddPrefabPostInit("beefalo", function(inst)
+                    if not TheWorld.ismastersim then
+                        return
+                    end
+
+                    local function UpdateNoPlayerTarget()
+                        local leader = inst.components.follower and inst.components.follower.leader
+                        if leader and (leader:HasTag("bell") or leader:HasTag("shadowbell")) then
+                            if not inst:HasTag("noplayertarget") then
+                                inst:AddTag("noplayertarget")
+                            end
+                        else
+                            if inst:HasTag("noplayertarget") then
+                                inst:RemoveTag("noplayertarget")
+                            end
+                        end
+                    end
+
+                    -- Hook SetBeefBellOwner
+                    local old_SetBeefBellOwner = inst.SetBeefBellOwner
+                    inst.SetBeefBellOwner = function(self, bell, bell_user)
+                        local success, err = old_SetBeefBellOwner(self, bell, bell_user)
+                        if success then
+                            UpdateNoPlayerTarget()
+                        end
+                        return success, err
+                    end
+
+                    -- Hook removal callback
+                    inst:ListenForEvent("stopfollowing", function()
+                        if inst:HasTag("noplayertarget") then
+                            inst:RemoveTag("noplayertarget")
+                        end
+                    end)
+
+                    -- Ensure initial state
+                    UpdateNoPlayerTarget()
+                end)
+            end
         end
+
+        -- protect Pearl and lavae_pet from Ice Flingomatic
+        AddPrefabPostInit("firesuppressor", function(inst)
+            if not TheWorld.ismastersim then
+                return
+            end
+
+            if inst.components.wateryprotection then
+                inst:DoTaskInTime(0, function()
+                    inst.components.wateryprotection:AddIgnoreTag("hermitcrab")
+                    inst.components.wateryprotection:AddIgnoreTag("lavae_pet")
+                end)
+            end
+        end)
     end
 
     -- follower item map icon settings

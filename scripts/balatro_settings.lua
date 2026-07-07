@@ -4,6 +4,7 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
     local BALATRO_UTIL = require("prefabs/balatro_util")
 
     ---- setup configs constants
+    local WORM_BOSS_MOUTH_MOD = config.WORM_BOSS_MOUTH_MOD
     local BURN_CARDS = config.BURN_CARDS
     local DROP_CARDS = config.DROP_CARDS
     local DROP_RECORD = config.DROP_RECORD
@@ -131,6 +132,11 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         minotaurhorn = config.minotaurhorn
     }
 
+    -- Tier 5 loot additions
+    if WORM_BOSS_MOUTH_MOD and config.boss_worm_mouth > 0 then
+        TIER5_LOOT_CONFIG["boss_worm_mouth"] = config.boss_worm_mouth
+    end
+
     -- Tier 6 loot additions
     if config.plants == 0 then
         for k,v in pairs(TIER5_LOOT_CONFIG) do
@@ -142,6 +148,7 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         TIER6_LOOT_CONFIG[coffeePrefab] = config.plants
     end
 
+    -- AdShovel plants
     if modEnabled("workshop-2973481040") and config.plants > 0 then
         TIER6_LOOT_CONFIG["dug_cactus"] = config.plants
         TIER6_LOOT_CONFIG["dug_cave_banana"] = config.plants
@@ -195,6 +202,9 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         end
         debug.setupvalue(fn, i, newfn)
     end
+
+    local luckValue = 0
+
     local function PickWeightedLoot(lootPool, pickCount)
         local pickedLoot = {}
 
@@ -209,8 +219,16 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
             for _, item in ipairs(lootPool) do
                 cumulative = cumulative + item.weight
                 if rand <= cumulative then
-                    -- to safeguard against duplicate picks in a roll, count = 1
-                    table.insert(pickedLoot, {item.prefab, 1})
+                    local dropCount = 1
+                    if config.ALLOW_LUCK and luckValue > 0 and math.random() < luckValue / 100 then
+                        dropCount = math.max(0, math.floor((luckValue or 0) + 0.5))
+                    end
+
+                    if item.prefab == "boss_worm_mouth" then
+                        dropCount = 2
+                    end
+
+                    table.insert(pickedLoot, {item.prefab, dropCount})
                     break
                 end
             end
@@ -369,10 +387,70 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         table.insert(rewards, runaway_prize)
     end
 
+    --- for winter feast
+    local winter_feast_ornaments = {
+        "winter_ornament_light1",
+        "winter_ornament_light2",
+        "winter_ornament_light3",
+        "winter_ornament_light4",
+        "winter_ornament_light5",
+        "winter_ornament_light6",
+        "winter_ornament_light7",
+        "winter_ornament_light8",
+        "winter_ornament_boss_bearger",
+        "winter_ornament_boss_deerclops",
+        "winter_ornament_boss_moose",
+        "winter_ornament_boss_dragonfly",
+        "winter_ornament_boss_beequeen",
+        "winter_ornament_boss_antlion",
+        "winter_ornament_boss_toadstool",
+        "winter_ornament_boss_toadstool_misery",
+        "winter_ornament_boss_minotaur",
+        "winter_ornament_boss_fuelweaver",
+        "winter_ornament_boss_klaus",
+        "winter_ornament_boss_krampus",
+        "winter_ornament_boss_noeyered",
+        "winter_ornament_boss_noeyeblue",
+        "winter_ornament_boss_crabking",
+        "winter_ornament_boss_crabkingpearl",
+        "winter_ornament_boss_celestialchampion1",
+        "winter_ornament_boss_celestialchampion2",
+        "winter_ornament_boss_celestialchampion3",
+        "winter_ornament_boss_celestialchampion4",
+        "winter_ornament_boss_wagstaff",
+        "winter_ornament_boss_malbatross",
+        "winter_ornament_boss_eyeofterror1",
+        "winter_ornament_boss_eyeofterror2",
+        "winter_ornament_boss_daywalker",
+        "winter_ornament_boss_daywalker2",
+        "winter_ornament_boss_shadowthralls",
+        "winter_ornament_boss_mutatedbearger",
+        "winter_ornament_boss_mutateddeerclops",
+        "winter_ornament_boss_mutatedwarg",
+        "winter_ornament_boss_wormboss",
+        "winter_ornament_boss_sharkboi",
+        "winter_ornament_boss_celestialrevenant",
+        "winter_ornament_boss_warbot",
+        "winter_ornament_boss_celestialscion",
+        "winter_ornament_festivalevents1",
+        "winter_ornament_festivalevents2",
+        "winter_ornament_festivalevents3",
+        "winter_ornament_festivalevents4",
+        "winter_ornament_festivalevents5"
+    }
+    local function GetRandomWinterFeastOrnament()
+        return winter_feast_ornaments[math.random(#winter_feast_ornaments)]
+    end
+
     -- override card and record drops conditionally
     local function SpawnCardRewards(inst, _, score, target)
+        local NEWYEAR = IsAny_YearOfThe_EventActive()
+        local CARNIVAL = IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL)
+        local WINTERS_FEAST = IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST)
+        local HALLOWED_NIGHTS = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS)
+
         -- if both drops are set to false
-        if not DROP_CARDS and not DROP_RECORD and DROP_HORSESHOE_CHANCE == 0 then
+        if not DROP_CARDS and not DROP_RECORD and DROP_HORSESHOE_CHANCE == 0 and not NEWYEAR and not CARNIVAL and not HALLOWED_NIGHTS and not WINTERS_FEAST then
             -- inform the player
             inst.sg:GoToState("talk")
             inst.components.talker:Chatter("JIMBO_NO_EXTRAS")
@@ -387,7 +465,7 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         end
 
         -- vanilla spawns 3 cards
-        if DROP_CARDS or DROP_HORSESHOE_CHANCE > 0 then
+        if DROP_CARDS or DROP_HORSESHOE_CHANCE > 0 or NEWYEAR or CARNIVAL or HALLOWED_NIGHTS or WINTERS_FEAST then
             -- cards always drop if enabled
             if DROP_CARDS then
                 for _ = 1, score do
@@ -401,6 +479,94 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
                     local fx = SpawnPrefab("die_fx")
                     fx.Transform:SetPosition(posX, posY, posZ)
                     fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+            end
+
+            -- drop lucky gold nuggets if event active
+            if NEWYEAR then
+                local dropCount = score
+                if config.ALLOW_LUCK then
+                    dropCount = score + luckValue
+                end
+
+                for _ = 1, dropCount do
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
+                    local nugget = SpawnPrefab("lucky_goldnugget")
+                    nugget.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+            end
+
+            -- drop tokens if event is active
+            if CARNIVAL then
+                local dropCount = score
+                if config.ALLOW_LUCK then
+                    dropCount = score + luckValue
+                end
+
+                for _ = 1, dropCount do
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
+                    local token = SpawnPrefab("carnival_prizeticket")
+                    token.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+            end
+
+            -- drop ornaments if event active
+            if WINTERS_FEAST then
+                local range = 2 + math.random() * 0.5
+                local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                local posX, posY, posZ = (target + offset):Get()
+
+                local selectedOrnament = GetRandomWinterFeastOrnament()
+                local spawnedOrnament = SpawnPrefab(selectedOrnament)
+                spawnedOrnament.Transform:SetPosition(posX, posY, posZ)
+
+                local fx = SpawnPrefab("die_fx")
+                fx.Transform:SetPosition(posX, posY, posZ)
+                fx.Transform:SetScale(0.5, 0.5, 0.5)
+            end
+
+            -- special halloween drops
+            if HALLOWED_NIGHTS then
+                if math.random() < 0.5 then
+                    for _ = 1, score do
+                        local range = 2 + math.random() * 0.5
+                        local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                        local posX, posY, posZ = (target + offset):Get()
+
+                        local potion = SpawnPrefab("halloweenpotion_bravery_large")
+                        potion.Transform:SetPosition(posX, posY, posZ)
+
+                        local fx = SpawnPrefab("spooked_spider_rock_fx")
+                        fx.Transform:SetPosition(posX, posY, posZ)
+                        fx.Transform:SetScale(0.5, 0.5, 0.5)
+                    end
+                else
+                    for _ = 1, score do
+                        local range = 2 + math.random() * 0.5
+                        local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                        local posX, posY, posZ = (target + offset):Get()
+
+                        local potion = SpawnPrefab("halloweenpotion_bravery_small")
+                        potion.Transform:SetPosition(posX, posY, posZ)
+
+                        local fx = SpawnPrefab("spooked_worms_fx")
+                        fx.Transform:SetPosition(posX, posY, posZ)
+                        fx.Transform:SetScale(0.5, 0.5, 0.5)
+                    end
                 end
             end
 
@@ -420,6 +586,10 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
                 -- inform player of horseshoe drop
                 inst.sg:GoToState("talk")
                 inst.components.talker:Chatter("JIMBO_LUCKY1")
+            elseif not DROP_CARDS and not NEWYEAR and not CARNIVAL and not HALLOWED_NIGHTS and not WINTERS_FEAST and DROP_HORSESHOE_CHANCE > 0 then
+                -- inform the player that horseshoe drop wasn't rolled
+                inst.sg:GoToState("talk")
+                inst.components.talker:Chatter("JIMBO_NO_LUCK")
             end
         else
             -- inform the player of false setting
@@ -428,40 +598,122 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         end
 
         -- vanilla spawns 1 card and 1 record
-        if DROP_RECORD or DROP_HORSESHOE_CHANCE > 0 then
+        if DROP_RECORD or DROP_HORSESHOE_CHANCE > 0 or NEWYEAR or CARNIVAL or HALLOWED_NIGHTS or WINTERS_FEAST then
             if score > 5 then
-                local range = 2 + math.random() * 0.5
-                local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
-                local posX, posY, posZ = (target + offset):Get()
-
                 if DROP_CARDS then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
                     local reward = TheWorld.components.playingcardsmanager:MakePlayingCard(nil, true)
                     reward.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
                 end
 
-                local range = 2 + math.random() * 0.5
-                local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
-                local posX, posY, posZ = (target + offset):Get()
+                if NEWYEAR then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
+                    local nugget = SpawnPrefab("lucky_goldnugget")
+                    nugget.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+
+                if CARNIVAL then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
+                    local token = SpawnPrefab("carnival_prizeticket")
+                    token.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+
+                if WINTERS_FEAST then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
+                    local selectedOrnament = GetRandomWinterFeastOrnament()
+                    local spawnedOrnament = SpawnPrefab(selectedOrnament)
+                    spawnedOrnament.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
+                end
+
+                if HALLOWED_NIGHTS then
+                    if math.random() < 0.5 then
+                        local range = 2 + math.random() * 0.5
+                        local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                        local posX, posY, posZ = (target + offset):Get()
+
+                        local potion = SpawnPrefab("halloweenpotion_bravery_large")
+                        potion.Transform:SetPosition(posX, posY, posZ)
+
+                        local fx = SpawnPrefab("spooked_spider_rock_fx")
+                        fx.Transform:SetPosition(posX, posY, posZ)
+                        fx.Transform:SetScale(0.5, 0.5, 0.5)
+                    else
+                        local range = 2 + math.random() * 0.5
+                        local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                        local posX, posY, posZ = (target + offset):Get()
+
+                        local potion = SpawnPrefab("halloweenpotion_bravery_small")
+                        potion.Transform:SetPosition(posX, posY, posZ)
+
+                        local fx = SpawnPrefab("spooked_worms_fx")
+                        fx.Transform:SetPosition(posX, posY, posZ)
+                        fx.Transform:SetScale(0.5, 0.5, 0.5)
+                    end
+                end
 
                 if DROP_RECORD then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
                     local record = SpawnPrefab("record")
                     record:SetRecord("balatro")
                     record.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
                 end
 
                 -- 1 horseshoe drops if the set chance is met
                 if math.random() < DROP_HORSESHOE_CHANCE then
+                    local range = 2 + math.random() * 0.5
+                    local offset = FindWalkableOffset(target, math.random() * 360, range, 16)
+                    local posX, posY, posZ = (target + offset):Get()
+
                     local horseshoe = SpawnPrefab("horseshoe")
                     horseshoe.Transform:SetPosition(posX, posY, posZ)
+
+                    local fx = SpawnPrefab("die_fx")
+                    fx.Transform:SetPosition(posX, posY, posZ)
+                    fx.Transform:SetScale(0.5, 0.5, 0.5)
 
                     -- inform player of horseshoe drop
                     inst.sg:GoToState("talk")
                     inst.components.talker:Chatter("JIMBO_LUCKY2")
+                elseif not DROP_CARDS and not DROP_RECORD and not NEWYEAR and not CARNIVAL and not HALLOWED_NIGHTS and not WINTERS_FEAST and DROP_HORSESHOE_CHANCE > 0 then
+                    -- inform the player that horseshoe drop wasn't rolled
+                    inst.sg:GoToState("talk")
+                    inst.components.talker:Chatter("JIMBO_NO_LUCK")
                 end
-
-                local fx = SpawnPrefab("die_fx")
-                fx.Transform:SetPosition(posX, posY, posZ)
-                fx.Transform:SetScale(0.5, 0.5, 0.5)
             end
         else
             -- inform the player of false setting
@@ -488,6 +740,12 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
         -- reroll tables each time a game is played
         local oldOnActivated = inst.components.activatable.OnActivate
         inst.components.activatable.OnActivate = function(self, doer)
+            if doer.components.luckuser then
+                luckValue = doer.components.luckuser:GetLuck()
+                print("LUCK VALUE: ", luckValue)
+            else
+                luckValue = 0
+            end
             BuildRewards(REWARDS)
             oldOnActivated(self, doer)
         end
@@ -499,35 +757,40 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
     -- patch cards and deck of cards to be burnable
     if BURN_CARDS then
         AddPrefabPostInit("playing_card", function(inst)
-            inst:AddComponent("fuel")
-            inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+            if not inst.components.fuel then
+                inst:AddComponent("fuel")
+                inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+            end
 
-            inst:AddComponent("burnable")
-            MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-            MakeSmallPropagator(inst)
+            if not inst.components.burnable then
+                MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+                MakeSmallPropagator(inst)
 
-            inst.components.burnable:SetOnBurntFn(function(inst)
-                local stacksize = inst.components.stackable and inst.components.stackable:StackSize() or 1
-                local ash = SpawnPrefab("ash")
-                if ash and ash.components.stackable then
-                    ash.components.stackable:SetStackSize(stacksize)
-                    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                end
-                inst:Remove()
-            end)
+                inst.components.burnable:SetOnBurntFn(function(inst)
+                    local stacksize = inst.components.stackable and inst.components.stackable:StackSize() or 1
+                    local ash = SpawnPrefab("ash")
+                    if ash and ash.components.stackable then
+                        ash.components.stackable:SetStackSize(stacksize)
+                        ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    end
+                    inst:Remove()
+                end)
+            end
         end)
         -- a deck of cards are not set as fuel since I don't want to bother with calculating per card inside
         AddPrefabPostInit("deck_of_cards", function(inst)
-            inst:AddComponent("burnable")
-            MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
-            MakeSmallPropagator(inst)
-            inst.components.burnable:SetOnBurntFn(function(inst)
-                local num_cards = inst.components.deckcontainer:Count()
-                for _ = 1, math.floor(num_cards / 1) do
-                    SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-                end
-                inst:Remove()
-            end)
+            if not inst.components.burnable then
+                MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+                MakeSmallPropagator(inst)
+
+                inst.components.burnable:SetOnBurntFn(function(inst)
+                    local num_cards = inst.components.deckcontainer:Count()
+                    for _ = 1, math.floor(num_cards / 1) do
+                        SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    end
+                    inst:Remove()
+                end)
+            end
         end)
     end
 end

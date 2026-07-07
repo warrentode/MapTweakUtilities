@@ -64,6 +64,7 @@ return function(STRINGS)
     STRINGS.BALATRO.JIMBO_NO_RECORD = "Oh, the boss says no record for you. Too bad!"
     STRINGS.BALATRO.JIMBO_LUCKY1 = "Oh, aren't you lucky today!"
     STRINGS.BALATRO.JIMBO_LUCKY2 = "The boss must really like you!"
+    STRINGS.BALATRO.JIMBO_NO_LUCK = "My bad, looks like you're out of luck this time!"
     -- propsign strings
     STRINGS.NAMES.PROPSIGN = "Prop Sign"
     STRINGS.CHARACTERS.GENERIC.DESCRIBE.PROPSIGN = "I shall use this in the name of violence!"
@@ -82,4 +83,7 @@ return function(STRINGS)
     STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CHARCOAL_PIT = "A convenient way to make charcoal."
     STRINGS.CHARACTERS.WOODIE.DESCRIBE.CHARCOAL_PIT = "Looking at it makes me sad."
     STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CHARCOAL_PIT = "I prefer doing the job myself."
+    -- alt recipe for message bottle
+    STRINGS.NAMES.SHELLWEAVER_MESSAGEBOTTLEEMPTY_ALT = STRINGS.NAMES.SHELLWEAVER_MESSAGEBOTTLEEMPTY
+    STRINGS.RECIPE_DESC.SHELLWEAVER_MESSAGEBOTTLEEMPTY_ALT = STRINGS.RECIPE_DESC.SHELLWEAVER_MESSAGEBOTTLEEMPTY
 end

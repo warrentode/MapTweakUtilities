@@ -41,7 +41,7 @@ Current list of features added:
 * Toggable option to greatly increase the time dried foods last
 * Toggable option allowing extra storable items in the Picnic Casket
 * Added charcoal pit from "Additional Structures - Updated" mod with configurable settings for the ash drops
-* Toggable option to prevent perishing of disguises (Clever Disguise, Wraith's Wreath, and Shamlet Mask)
+* Toggable option to prevent perishing of disguises (Clever Disguise, Wraith's Wreath, Spiderhat, Beefalo Hat, and Shamlet Mask)
 
 ***
 If you like this mod, you can support my work by either subscribing or tipping in the following ways:

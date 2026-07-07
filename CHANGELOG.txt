@@ -1,3 +1,14 @@
+2.4.1:
+* Pearl no longer targeted by the Ice Flingomatic when follower protection is enabled
+* Pearl now accepts winter coats correctly when "More Equip Slots+" mod is loaded
+* spiders and pigs no longer eat food off the ground when the no swiping feature is enabled unless specifically permitted to retain function of auto farm builds, but still eat food given to them
+* spiderhat and beefalohat now included in the non-perishable disguises
+* beefalos bonded to a bell are now properly protected against any player attacks (but can still be attacked by other mobs) - this also fixes the crash regarding eyeplants attacking beefalos having a "HasTag is nil" error
+* added lucky gold nuggets and carnival tickets to the card drop pool in the balatro rewards when the matching event is active
+* added boss ornaments to card drop in balatro rewards when winter feast is active
+* added bravery potion to card drop pool in the balatro rewards when hallowed nights is active
+* empty bottles can now be crafted in bulk
+* added pipspook to the icon finder list
 2.4.0:
 * Added charcoal pit from the "Additional Structures - Updated" mod and fixed the behavior of the machine
 * medkit patch now makes it stay inside the inventory when opened and auto closes when the player moves like it's supposed to
