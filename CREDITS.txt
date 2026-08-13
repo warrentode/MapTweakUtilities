@@ -15,7 +15,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3465622389
 
 =======================================================================
 
-Batch Trading, Growth Cycling, Auto Stacking
+Batch Trading, Growth Cycling, Auto Stacking, Auto Tree Removal
 
 * Lag Remover by 长安
 https://steamcommunity.com/sharedfiles/filedetails/?id=3050607025
@@ -114,10 +114,13 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3213385590
 
 =======================================================================
 
-Chef Pouch Settings
+Chef Pouch and Webber Backpack Settings
 
 * Ultimate Perish Settings by ✿ N A B I ✿
 https://steamcommunity.com/sharedfiles/filedetails/?id=1242907291
+
+* Make Webber Great Again
+https://steamcommunity.com/sharedfiles/filedetails/?id=3740753241
 
 =======================================================================
 
@@ -125,5 +128,19 @@ Charcoal Pit
 
 * Additional Structures - Updated by I'm so HM02
 https://steamcommunity.com/sharedfiles/filedetails/?id=3073970262
+
+=======================================================================
+
+Wall Regen Settings
+
+* Wall Health Regen
+https://steamcommunity.com/sharedfiles/filedetails/?id=509723993
+
+=======================================================================
+
+Critter trait based effects
+
+* Not So Useless Pet
+https://steamcommunity.com/sharedfiles/filedetails/?id=3224584333
 
 =======================================================================

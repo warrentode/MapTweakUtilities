@@ -1,20 +1,13 @@
 -- Boss loot table for contested-item scaling
 
 GLOBAL.mtu_scaled_loot = {
+    -- ancient fuelweaver
     ["stalker_atrium"] = {
         { ["name"] = "skeletonhat", ["count"] = "scale", ["chance"] = "scale" },
         { ["name"] = "armorskeleton", ["count"] = "scale", ["chance"] = "scale" },
         { ["name"] = "thurible", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["bearger"] = {
-        { ["name"] = "thick_fur", ["count"] = "scale", ["chance"] = "scale" },
-    },
-    ["beequeen"] = {
-        { ["name"] = "hivehat", ["count"] = "scale", ["chance"] = "scale" },
-    },
-    ["crabking"] = {
-        { ["name"] = "boat_bumper_shell_kit", ["count"] = "scale", ["chance"] = "scale" },
-    },
+    -- celestial bosses
     ["alterguardian_phase3"] = {
         { ["name"] = "alterguardianhatshard", ["count"] = "scale", ["chance"] = "scale" },
     },
@@ -22,33 +15,27 @@ GLOBAL.mtu_scaled_loot = {
         { ["name"] = "lunar_seed", ["count"] = "scale", ["chance"] = "scale" },
         { ["name"] = "purebrilliance", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["deerclops"] = {
-        { ["name"] = "deerclops_eyeball", ["count"] = "scale", ["chance"] = "scale" },
-    },
-    ["minotaur"] = {
-        { ["name"] = "minotaurhorn", ["count"] = "scale", ["chance"] = "scale" },
-    },
     -- terraria crossover bosses
     ["eyeofterror"] = {
-        { ["name"] = "eye_mask", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "eyemaskhat", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["retinazor"] = {
-        { ["name"] = "shield_of_terror", ["count"] = "scale", ["chance"] = "scale" },
+    ["twinofterror1"] = {
+        { ["name"] = "shieldofterror", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["spazmatism"] = {
-        { ["name"] = "shield_of_terror", ["count"] = "scale", ["chance"] = "scale" },
+    ["twinofterror2"] = {
+        { ["name"] = "shieldofterror", ["count"] = "scale", ["chance"] = "scale" },
     },
     -- lunar rift bosses
-    ["crystal_deerclops"] = {
+    ["mutateddeerclops"] = {
         { ["name"] = "purebrilliance", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["armored_bearger"] = {
+    ["mutatedbearger"] = {
         { ["name"] = "purebrilliance", ["count"] = "scale", ["chance"] = "scale" },
     },
-    ["possessed_varg"] = {
+    ["mutatedwarg"] = {
         { ["name"] = "purebrilliance", ["count"] = "scale", ["chance"] = "scale" },
     },
-    -- shadow chess pieces
+    -- shadow chess pieces - only need one of them for the armor
     ["shadow_bishop"] = {
         { ["name"] = "armor_sanity", ["count"] = "scale", ["chance"] = "scale" },
         { ["name"] = "nightsword", ["count"] = "scale", ["chance"] = "scale" },
@@ -61,16 +48,72 @@ GLOBAL.mtu_scaled_loot = {
         { ["name"] = "armor_sanity", ["count"] = "scale", ["chance"] = "scale" },
         { ["name"] = "nightsword", ["count"] = "scale", ["chance"] = "scale" },
     },
+    -- hunting mobs
+    ["koalefant_summer"] = {
+        { ["name"] = "trunk_summer", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["koalefant_winter"] = {
+        { ["name"] = "trunk_winter", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["spat"] = {
+        { ["name"] = "steelwool", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
     -- ripple
     ["shadowthrall_centipede_controller"] = {
         { ["name"] = "dreadstone", ["count"] = "scale", ["chance"] = "scale" },
     },
-    -- blueprint only bosses
-    ["antlion"] = {},
-    ["daywalker"] = {},
-    ["daywalker2"] = {},
-    ["dragonfly"] = {},
-    ["toadstool"] = {},
-    ["toadstool_dark"] = {},
-    ["worm_boss"] = {},
+    -- regular bosses
+    ["bearger"] = {
+        { ["name"] = "bearger_fur", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["beequeen"] = {
+        { ["name"] = "hivehat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["dragonfly"] = {
+        { ["name"] = "dragon_scales", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["crabking"] = {
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["toadstool"] = {
+        { ["name"] = "shroom_skin", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["toadstool_dark"] = {
+        { ["name"] = "shroom_skin", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["deerclops"] = {
+        { ["name"] = "deerclops_eyeball", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["minotaur"] = {
+        { ["name"] = "minotaurhorn", ["count"] = "scale", ["chance"] = "scale" },
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["worm_boss"] = {
+        { ["name"] = "tree_rock_seed", ["count"] = "scale", ["chance"] = "scale" },
+    },
+
+    -- meat only
+    ["antlion"] = {
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["moose"] = {
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["malbatross"] = {
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["beefalo"] = {
+        { ["name"] = "meat", ["count"] = "scale", ["chance"] = "scale" },
+    },
+    ["lordfruitfly"] = {
+        { ["name"] = "plantmeat", ["count"] = "scale", ["chance"] = "scale" },
+    },
 }

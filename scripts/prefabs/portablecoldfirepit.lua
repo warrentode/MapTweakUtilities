@@ -151,7 +151,7 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("burnable")
-    inst.components.burnable:AddBurnFX("coldfirefire", Vector3(0, 50, 0), "firefx", true, 0.7)
+    inst.components.burnable:AddBurnFX("coldfirefire", Vector3(0, 15, 0), "firefx", true, 0.7, false)
     inst:ListenForEvent("onextinguish", onextinguish)
 
     inst:AddComponent("lootdropper")

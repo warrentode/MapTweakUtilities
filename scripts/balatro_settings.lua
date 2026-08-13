@@ -217,11 +217,12 @@ return function(AddPrefabPostInit, TUNING, modEnabled, config)
             local rand = math.random() * totalWeight
             local cumulative = 0
             for _, item in ipairs(lootPool) do
+
                 cumulative = cumulative + item.weight
                 if rand <= cumulative then
                     local dropCount = 1
                     if config.ALLOW_LUCK and luckValue > 0 and math.random() < luckValue / 100 then
-                        dropCount = math.max(0, math.floor((luckValue or 0) + 0.5))
+                        dropCount = dropCount + 1
                     end
 
                     if item.prefab == "boss_worm_mouth" then

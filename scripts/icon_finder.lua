@@ -74,9 +74,11 @@ return function(AddPrefabPostInit, modEnabled, config)
             elseif inst.prefab == "wall_moonrock" then
                 return "wall_moonrock.tex"
             elseif inst.prefab == "wall_scrap" then
-                return "wall_scrap.tex"
+                -- placeholder image for now
+                return "wall_wood.tex"
             elseif inst.prefab == "wall_dreadstone" then
-                return "wall_dreadstone.tex"
+                -- placeholder image for now
+                return "wall_ruins.tex"
             elseif inst.prefab == "wall_limestone" then
                 return "wall_limestone.tex"
             elseif inst.prefab == "wall_enforcedlimestone" then

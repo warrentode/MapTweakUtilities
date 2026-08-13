@@ -614,9 +614,11 @@ local ICON_SCALE = .6
 local ICON_RADIUS = 50
 local SPELLBOOK_RADIUS = 100
 local SPELLBOOK_FOCUS_RADIUS = SPELLBOOK_RADIUS + 2
-local BASESPELLS = {}
+--- I need this set to global to make my patch work
+BASESPELLS = {}
 
-local SKILLTREE_SPELL_DEFS = {
+--- I need this set to global to make my patch work
+SKILLTREE_SPELL_DEFS = {
     ["willow_embers"] = {
         label = STRINGS.PYROMANCY.FIRE_THROW,
         onselect = function(inst)
@@ -829,7 +831,8 @@ local SKILLTREE_SPELL_DEFS = {
     },
 }
 
-local SKILLTREE_SPELL_ORDER = {
+--- i need this set to global to make my patch work
+SKILLTREE_SPELL_ORDER = {
     "willow_embers",
     "willow_fire_burst",
     "willow_fire_ball",

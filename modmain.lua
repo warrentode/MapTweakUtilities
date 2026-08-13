@@ -4,6 +4,8 @@ GLOBAL.setmetatable(env, {
     end,
 })
 
+rawset(_G, "updatespells", rawget(_G, "updatespells") or function() end)
+
 local load_lang_keys = require("mtu_strings")
 load_lang_keys(STRINGS)
 
@@ -49,16 +51,13 @@ local function UpdatePlayersLoaded()
     MTU.players_loaded = clients ~= nil and #clients or 0
 end
 
-AddSimPostInit(function()
+AddPrefabPostInit("world", function(world)
     if not TheWorld.ismastersim then
         return
     end
 
-    -- Initial population
-    UpdatePlayersLoaded()
-
-    -- Periodic correction
-    TheWorld:DoPeriodicTask(5, UpdatePlayersLoaded)
+    world:ListenForEvent("ms_playerspawn", UpdatePlayersLoaded)
+    world:ListenForEvent("ms_playerleft", UpdatePlayersLoaded)
 end)
 
 -- globabl boolean check for other mods
@@ -105,24 +104,32 @@ local starvation_config = {
 local boss_scaling_config = {
     BOSS_SCALING_MODE = GetModConfigData("scale_boss_loot") or 0,
     BOSS_SCALING_RANGE = GetModConfigData("boss_scale_range") or 30,
-    BOSS_SCALING_BLUEPRINTS = GetModConfigData("boss_scale_blueprints") or false,
-    BOSS_SCALING_WORM_MOUTH = GetModConfigData("scale_boss_worm_mouth") or false
+    BOSS_SCALE_SOLO_BONUS = GetModConfigData("boss_scale_solo_bonus") or false,
+    BOSS_SCALING_WORM_MOUTH = GetModConfigData("scale_boss_worm_mouth") or false,
+    CRAFTABLE_WORM_BOSS_MOUTH = GetModConfigData("allow_craftable_boss_worm_mouth") or false
 }
 local no_swiping_config = {
     ALLOW_SLURTLE_EATING = GetModConfigData("allow_slurtles") or false,
     ALLOW_SPIDER_EATING = GetModConfigData("allow_spiders") or false,
     ALLOW_PIG_EATING = GetModConfigData("allow_pigs") or false,
+    ALLOW_HOUND_EATING = GetModConfigData("allow_hounds") or false,
     ALLOW_WORM_BOSS_EATING = GetModConfigData("allow_worm_boss") or false
 }
 local trader_config = {
     SLINGSHOT_EVERYONE = GetModConfigData("slingshot_everyone") or false,
     PORTABLECAMPFIRE_EVERYONE = GetModConfigData("portablecampfire_everyone") or false,
     TRADER_ICON = GetModConfigData("wanderingtrader_icon") or false,
-    WALTER_TRADES = GetModConfigData("wanderingtrader_walter_trades") or false
+    WALTER_TRADES = GetModConfigData("wanderingtrader_walter_trades") or false,
+    WARLY_TRADES = GetModConfigData("wanderingtrader_warly_trades") or false,
+    WILLOW_TRADES = GetModConfigData("wanderingtrader_willow_trades") or false,
+    WOODIE_TRADES = GetModConfigData("wanderingtrader_woodie_trades") or false,
+    WILSON_TRADES = GetModConfigData("wanderingtrader_wilson_trades") or false,
+    MAXWELL_TRADES = GetModConfigData("wanderingtrader_maxwell_trades") or false
 }
 local follower_config = {
     PROTECT_FOLLOWERS = GetModConfigData("protect_followers") or false,
-    REVEAL_FOLLOWERS = GetModConfigData("reveal_follower_item") or false
+    REVEAL_FOLLOWERS = GetModConfigData("reveal_follower_item") or false,
+    NO_TAMED_DOMESTICATION_DECAY = GetModConfigData("no_tamed_domestication_decay") or false
 }
 local balatro_config = {
     WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377"),
@@ -199,14 +206,9 @@ local medical_config = {
     MEDICAL_HAUNTING = GetModConfigData("medical_haunt") or false,
     MEDKIT_MOD = modEnabled("workshop-2812739628")
 }
-local spicepack_config = {
-    SPICEPACK_WATERPROOF = GetModConfigData("spicepack_waterproof") or false,
-    SPICEPACK_INVENTORY = GetModConfigData("spicepack_inventory") or false,
-    SPICEPACK_BURNABLE = GetModConfigData("spicepack_burnable") or true,
-    SPICEPACK_PERISH_MULT = GetModConfigData("spicepack_perish_mult") or 1
-}
-local wendy_basket_config = {
-    ALT_RECIPES_ALLOWED = GetModConfigData("allow_alt_recipes") or false
+local extra_storage_items_config = {
+    ALT_RECIPES_ALLOWED = GetModConfigData("allow_alt_recipes") or false,
+    WEBBER_BIN = GetModConfigData("allow_spiders_bin") or false
 }
 local icon_finder_config = {
     BRIGHTSHADE_FINDER = GetModConfigData("brightshade_finder") or false,
@@ -217,27 +219,69 @@ local icon_finder_config = {
     PIPSPOOK_FINDER = GetModConfigData("pipspook_finder") or false,
     MANDRAKE_FINDER = GetModConfigData("mandrake_finder") or false
 }
+local recipe_config = {
+    CRAFTABLE_WORM_BOSS_MOUTH = GetModConfigData("allow_craftable_boss_worm_mouth") or false,
+    WORM_BOSS_MOUTH_INGREDIENT_SET = GetModConfigData("boss_worm_mouth_recipe") or 1
+}
+local wall_regen_config = {
+    WALL_HEALTH_ENHANCE = GetModConfigData("wall_health_enhance") or false,
+    WALL_HEALTH_REGEN = GetModConfigData("wall_health_regen") or false,
+    WALL_REGEN_VALUE = GetModConfigData("wall_regen_value") or 50
+}
+local asc_compat_config = {
+    STORAGE_WARDROBE_MOD = modEnabled("workshop-2794741028"),
+    STORAGE_COMPOSTINGBIN_MOD = modEnabled("workshop-3714039113")
+}
+local ubs_compat_config = {
+    SPICEPACK_WATERPROOF = GetModConfigData("spicepack_waterproof") or false,
+    SPICEPACK_INVENTORY = GetModConfigData("spicepack_inventory") or false,
+    SPICEPACK_BURNABLE = GetModConfigData("spicepack_burnable") or true,
+    SPICEPACK_PERISH_MULT = GetModConfigData("spicepack_perish_mult") or 1,
+    WEBBER_BACKPACK_WATERPROOF = GetModConfigData("webber_backpack_waterproof") or false,
+    WEBBER_BACKPACK_INVENTORY = GetModConfigData("webber_backpack_inventory") or false,
+    WEBBER_BACKPACK_BURNABLE = GetModConfigData("webber_backpack_burnable") or true,
+    WEBBER_BACKPACK_PERISH_MULT = GetModConfigData("webber_backpack_perish_mult") or 1
+}
+local everyone_settings_config = {
+    HOWLITZER_STACKSIZE = GetModConfigData("howlitzer_stacksize") or false,
+    SLINGSHOT_EVERYONE = GetModConfigData("slingshot_everyone") or false,
+    PORTABLECAMPFIRE_EVERYONE = GetModConfigData("portablecampfire_everyone") or false,
+    NO_SWIPING = GetModConfigData("no_swiping") or false,
+    WARLY_COOKPOT_EVERYONE = GetModConfigData("warly_cookpot_everyone") or false,
+    WARLY_RECIPES_LOCKED = GetModConfigData("warly_recipes_locked") or false,
+    COOKPOT_CLIENT_MOD = modEnabled("workshop-727774324")
+}
+local perish_settings_config = {
+    INCREASE_DRIED_PERISH = GetModConfigData("dried_food_perish_time") or false,
+    DISGUISE_NONPERISH = GetModConfigData("disguise_perish") or false
+}
 
-local HOWLITZER_STACKSIZE = GetModConfigData("howlitzer_stacksize") or false
-local SLINGSHOT_EVERYONE = GetModConfigData("slingshot_everyone") or false
-local PORTABLECAMPFIRE_EVERYONE = GetModConfigData("portablecampfire_everyone") or false
 local NO_SWIPING = GetModConfigData("no_swiping") or false
-local EXTRA_BASKET_ITEMS = GetModConfigData("extra_basket_items") or false
+local EXTRA_STORAGE_ITEMS = GetModConfigData("extra_storage_items") or false
+local AUTO_STUMP_REMOVAL = GetModConfigData("auto_stump_removal") or false
 
 local LOOPING_WEEDS = GetModConfigData("looping_weeds") or false
 local REMOVABLE_GRAVE = GetModConfigData("remove_grave") or false
 local ALT_RECIPES_ALLOWED = GetModConfigData("allow_alt_recipes") or false
 local WEBBER_RECIPES_ALLOWED = GetModConfigData("allow_webber_bulk") or false
-local WEBBER_BIN = GetModConfigData("allow_spiders_bin") or false
 local WANDERINGTRADER_ALT_TRADES = GetModConfigData("wanderingtrader_alt_trades") or false
 local STORABLE_SOULS = GetModConfigData("storable_souls") or false
-local INCREASE_DRIED_PERISH = GetModConfigData("dried_food_perish_time") or false
-local DISGUISE_NONPERISH = GetModConfigData("disguise_perish") or false
+local FROG_RAIN_PERCENT = GetModConfigData("frog_rain_percent") or 1
+local CRITTER_TRAIT_EFFECTS = GetModConfigData("critter_trait_effects") or false
+local OCEANTREE_FIREFLIES = GetModConfigData("oceantree_fireflies") or false
 
 local WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377")
-local PERISH_SETTINGS_MOD = modEnabled("workshop-1242907291")
+local ULTIMATE_PERISH_SETTINGS_MOD = modEnabled("workshop-1242907291")
+local MORE_EQUIP_SLOTS_MOD = modEnabled("workshop-3372256873")
+local AUTO_SORT_CHEST_MOD = modEnabled("workshop-3232213331") or modEnabled("workshop-1932983865")
+local ULTIMATE_BACKPACK_SETTINGS_MOD = modEnabled("workshop-1242915898")
+-- this mod seems to be gone from steam so we will keep it here as legacy for anyone like me that has it still
+local COFFEE_IN_FUMAROLES_MOD = modEnabled("workshop-3573989143")
+local STRONGER_DRYING_RACK_MOD = modEnabled("workshop-3546208045")
 
 ---------- FEATURE FILES ----------
+
+require("mtu_commands")
 
 local load_stacking = require("stack_settings")
 load_stacking(AddComponentPostInit, AddPrefabPostInitAny, stack_config, MTU)
@@ -255,7 +299,7 @@ local load_starvation = require("starvation_settings")
 load_starvation(AddPrefabPostInit, TUNING, starvation_config)
 
 local load_boss_scaling = require("boss_scaling")
-load_boss_scaling(MTU, modEnabled, boss_scaling_config, GetSharedLootTable, SetSharedLootTable, AllPlayers, distsq, AddPrefabPostInit, modimport)
+load_boss_scaling(MTU, modEnabled, boss_scaling_config, AllPlayers, distsq, AddPrefabPostInit, modimport)
 
 local load_follower_protections = require("protect_followers")
 load_follower_protections(TUNING, SetSharedLootTable, AddPrefabPostInit, follower_config)
@@ -269,9 +313,21 @@ load_medical_settings(AddPrefabPostInit, ACTIONS, medical_config)
 local load_icon_finder = require("icon_finder")
 load_icon_finder(AddPrefabPostInit, modEnabled, icon_finder_config)
 
+local load_wall_regen_settings = require("wall_regen_settings")
+load_wall_regen_settings(AddPrefabPostInit, TUNING, wall_regen_config)
+
+local load_everyone_settings = require("everyone_settings")
+load_everyone_settings(AddClassPostConstruct, AddPlayerPostInit, AddPrefabPostInit, everyone_settings_config)
+
+local load_yotp_propsign = require("yotp_propsign")
+load_yotp_propsign(AddPrefabPostInit, TUNING)
+
+local load_perish_settings = require("perish_settings")
+load_perish_settings(AddPrefabPostInit, TUNING, perish_settings_config)
+
 if ALT_RECIPES_ALLOWED then
     local load_alt_recipes = require("alt_recipes")
-    load_alt_recipes(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
+    load_alt_recipes(modEnabled, recipe_config, AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
 end
 if WEBBER_RECIPES_ALLOWED then
     local load_webber_alt_recipes = require("webber_alt_recipes")
@@ -293,409 +349,55 @@ if NO_SWIPING then
     local load_no_swiping = require("no_swiping")
     load_no_swiping(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostInit, ACTIONS, EQUIPSLOTS, FRAMES, debug, no_swiping_config, modprint)
 end
-if EXTRA_BASKET_ITEMS then
-    local load_basket_settings = require("wendy_basket_settings")
-    load_basket_settings(AddPrefabPostInit, TUNING, wendy_basket_config)
+if EXTRA_STORAGE_ITEMS then
+    local load_extra_storage_settings = require("extra_storage_settings")
+    load_extra_storage_settings(AddPrefabPostInit, TUNING, extra_storage_items_config)
 end
-
----------- EVERYONE SETTINGS ----------
-
-if HOWLITZER_STACKSIZE then
-    AddPrefabPostInit("houndstooth_blowpipe", function(inst)
-        if inst.components.container then
-            inst.components.container:EnableInfiniteStackSize(true)
-        end
-    end)
+if AUTO_STUMP_REMOVAL then
+    local load_auto_stump_removal = require("auto_stump_removal")
+    load_auto_stump_removal(AddPrefabPostInit, AddPrefabPostInitAny, AddSimPostInit, modprint)
 end
-
-AddPlayerPostInit(function(inst)
-    if SLINGSHOT_EVERYONE then
-        inst:AddTag("slingshot_sharpshooter")
-    end
-    if PORTABLECAMPFIRE_EVERYONE then
-        inst:AddTag("portable_campfire_user")
-    end
-    if NO_SWIPING then
-        inst:AddTag("stronggrip")
-    end
-end)
-
----------- CUSTOM PATCH FOR WORM BOSS MOUTH MOD ----------
-
+if CRITTER_TRAIT_EFFECTS then
+    local load_critter_trait_effects = require("critter_trait_effects")
+    load_critter_trait_effects(AddPrefabPostInit, AddSimPostInit, CRAFTING_FILTERS, TUNING, ACTIONS, modprint)
+end
+if AUTO_SORT_CHEST_MOD then
+    local load_asc_compat = require("asc_compat")
+    load_asc_compat(AddPrefabPostInit, asc_compat_config)
+end
+if MORE_EQUIP_SLOTS_MOD then
+    local load_more_equip_slots_compat = require("more_equip_slots_compat")
+    load_more_equip_slots_compat(AddPrefabPostInit, MESMODDED, EQUIPSLOTS)
+end
+if ULTIMATE_BACKPACK_SETTINGS_MOD then
+    local load_ubs_compat = require("ubs_compat")
+    load_ubs_compat(AddPrefabPostInit, ubs_compat_config)
+end
+if ULTIMATE_PERISH_SETTINGS_MOD then
+    local load_ups_compat = require("ups_compat")
+    load_ups_compat(AddPrefabPostInit)
+end
 if WORM_BOSS_MOUTH_MOD then
-    AddSimPostInit(function()
-        if ACTIONS.REMOVEHOLEBYMOUTH then
-            local old_fn = ACTIONS.REMOVEHOLEBYMOUTH.fn
-            ACTIONS.REMOVEHOLEBYMOUTH.fn = function(act)
-                local result = old_fn(act)
-
-                -- give back the worm mouth to the player if removed
-                if act.invobject and act.invobject.prefab == "boss_worm_mouth" and act.doer and act.doer.components.inventory then
-                    act.doer.components.inventory:GiveItem(act.invobject)
-                end
-
-                return result
-            end
-        end
-    end)
+    local load_ups_compat = require("worm_boss_mouth_patch")
+    load_ups_compat(AddSimPostInit, ACTIONS)
 end
-
----------- CUSTOM PATCH FOR PROPSIGN ----------
-
-AddPrefabPostInit("propsign", function(inst)
-    -- change the vanilla override here to enable custom name and inspection strings
-    inst:SetPrefabNameOverride("propsign")
-
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    -- set to allow in inventory
-    inst.components.inventoryitem.cangoincontainer = true
-
-    -- these are craftable now, so no longer irreplaceable
-    inst:RemoveTag("irreplaceable")
-    -- make them stackable
-    inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_TINYITEM
-
-    -- cancel break propsign call
-    inst.OnCancelMinigame = function()
-        --- doing nothing here to prevent the sign from breaking when a minigame isn't active
-    end
-end)
-
----------- STORABLE SOULS AND EMBERS ----------
-
--- this needs to stay inside the modmain file to prevent crashing until i figure out the proper way to migrate it
+if COFFEE_IN_FUMAROLES_MOD then
+    local load_ups_compat = require("ctf_patch")
+    load_ups_compat(AddPrefabPostInit, DEPLOYSPACING_RADIUS, DEPLOYSPACING)
+end
+if STRONGER_DRYING_RACK_MOD then
+    local load_ups_compat = require("sdr_patch")
+    load_ups_compat(AddComponentPostInit)
+end
+if OCEANTREE_FIREFLIES then
+    local load_oceantree_fireflies = require("oceantree_fireflies")
+    load_oceantree_fireflies(AddPrefabPostInit, TWOPI, TUNING)
+end
 if STORABLE_SOULS then
-    AddPrefabPostInit("wortox_soul", function(inst)
-        if not TheWorld.ismastersim then
-            return
-        end
-
-        if inst.components.inventoryitem then
-            inst.components.inventoryitem.canonlygoinpocketorpocketcontainers = false
-        end
-    end)
-
-    -- Ensure the original updatespells function is removed/overwritten globally
-    _G.updatespells = function(inst, owner)
-        -- Custom version of updatespells to handle the crash-causing issue
-        local spells = shallowcopy(BASESPELLS)  -- Deep copy of base spells
-        if owner then
-            for _, v in ipairs(SKILLTREE_SPELL_ORDER) do
-                -- Custom check to prevent crash (check if skilltreeupdater exists)
-                if owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated(v) then
-                    table.insert(spells, SKILLTREE_SPELL_DEFS[v]) -- Add the activated spell
-                end
-            end
-        end
-        inst.components.spellbook:SetItems(spells)  -- Apply the modified spell list
-    end
-
-    -- AddPrefabPostInit to modify the 'willow_ember' prefab and disable the vanilla function
-    AddPrefabPostInit("willow_ember", function(inst)
-        if not TheWorld.ismastersim then
-            return
-        end
-
-        -- Disable the vanilla global function
-        _G.updatespells = function()
-        end  -- Disable the original function from being called
-
-        -- Set the ember to be allowed in all containers, not just pockets
-        if inst.components.inventoryitem then
-            inst.components.inventoryitem.canonlygoinpocket = false
-            inst.components.inventoryitem.cangoincontainer = true
-        end
-    end)
+    local load_storable_souls = require("storable_souls")
+    load_storable_souls(AddPrefabPostInit)
 end
-
----------- CUSTOM PATCH FOR CHEF POUCH ----------
-
-AddPrefabPostInit("spicepack", function(inst)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    if spicepack_config.SPICEPACK_INVENTORY then
-        inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem.cangoincontainer = true
-    end
-
-    if spicepack_config.SPICEPACK_WATERPROOF then
-        inst:AddTag("waterproofer")
-        inst:AddComponent("waterproofer")
-        inst.components.waterproofer:SetEffectiveness(0)
-    end
-
-    if spicepack_config.SPICEPACK_PERISH_MULT ~= 1 then
-        inst:AddComponent("preserver")
-        inst.components.preserver:SetPerishRateMultiplier(spicepack_config.SPICEPACK_PERISH_MULT)
-    end
-
-    if not spicepack_config.SPICEPACK_BURNABLE then
-        if inst and inst.components.burnable then
-            inst:RemoveComponent('burnable')
-            inst:RemoveComponent('propagator')
-        end
-    end
-end)
-
----------- CUSTOM PATCH FOR ULTIMATE PERISH SETTINGS MOD ----------
-
-if PERISH_SETTINGS_MOD then
-    local function IceboxStoreCreaturesActive()
-        local prefab = Prefabs["mole"]
-        return prefab and prefab.tags and table.contains(prefab.tags, "icebox_valid")
-    end
-
-    local insects = {
-        "butterfly",
-        "moonbutterfly",
-        "bee",
-        "killerbee"
-    }
-
-    if IceboxStoreCreaturesActive then
-        for _, v in ipairs(insects) do
-            AddPrefabPostInit(v, function(inst)
-                if not inst:HasTag("icebox_valid") then
-                    inst:AddTag("icebox_valid")
-                end
-            end)
-        end
-    end
-end
-
----------- CUSTOM PATCH FOR JERKY PERISH SETTINGS ----------
-
-if INCREASE_DRIED_PERISH then
-    local dried_foods = {
-        "meat_dried",
-        "smallmeat_dried",
-        "monstermeat_dried",
-        "humanmeat_dried",
-        "fishmeat_small_dried",
-        "fishmeat_dried",
-        "plantmeat_dried",
-        "kelp_dried"
-    }
-
-    for _, v in ipairs(dried_foods) do
-        AddPrefabPostInit(v, function(inst)
-            if inst.components.perishable then
-                inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW * 2)
-            end
-        end)
-    end
-end
-
----------- CUSTOM PATCH FOR SPIDER BIN STORAGE ----------
-
-if WEBBER_BIN then
-    local spider_list = {
-        "spider",
-        "spider_warrior",
-        "spider_hider",
-        "spider_spitter",
-        "spider_dropper",
-        "spider_moon",
-        "spider_healer",
-        "spider_water"
-    }
-
-    for _, v in ipairs(spider_list) do
-        AddPrefabPostInit(v, function(inst)
-            if not inst:HasTag("beargerfur_sack_valid") then
-                inst:AddTag("beargerfur_sack_valid")
-            end
-        end)
-    end
-
-    local function IceboxStoreCreaturesActive()
-        local prefab = Prefabs["mole"]
-        return prefab and prefab.tags and table.contains(prefab.tags, "icebox_valid")
-    end
-
-    if IceboxStoreCreaturesActive then
-        for _, v in ipairs(spider_list) do
-            AddPrefabPostInit(v, function(inst)
-                if not inst:HasTag("icebox_valid") then
-                    inst:AddTag("icebox_valid")
-                end
-            end)
-        end
-    end
-end
-
----------- CUSTOM PATCH FOR HAT PERISH TIME ----------
-
-if DISGUISE_NONPERISH then
-    local disguises = {
-        "ghostflowerhat",
-        "mermhat",
-        "disguisehat",
-        "beefalohat",
-    }
-
-    for _, v in ipairs(disguises) do
-        AddPrefabPostInit(v, function(inst)
-            if not TheWorld.ismastersim then
-                return
-            end
-
-            if inst.components.perishable then
-                if inst:HasTag("show_spoilage") then
-                    inst:RemoveTag("show_spoilage")
-                    inst:AddTag("hide_percentage")
-                end
-                inst.components.perishable:StopPerishing()
-            end
-            if inst.components.fueled then
-                inst:RemoveComponent("fueled")
-            end
-        end)
-    end
-
-    -- spiderhat specific patch
-    AddPrefabPostInit("spiderhat", function(inst)
-        if not TheWorld.ismastersim then
-            return
-        end
-
-        if inst.components.fueled then
-            inst:RemoveComponent("fueled")
-        end
-
-        local function safe_spider_update(inst)
-            local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
-            if owner and owner.components.leader then
-                owner.components.leader:RemoveFollowersByTag("pig")
-                local x, y, z = owner.Transform:GetWorldPosition()
-                local ents = TheSim:FindEntities(x, y, z, TUNING.SPIDERHAT_RANGE, "spider")
-                for _, v in pairs(ents) do
-                    local leader = v.components.follower and v.components.follower:GetLeader()
-                    if v.components.follower
-                            and not owner.components.leader:IsFollower(v)
-                            and owner.components.leader.numfollowers < 10
-                            and (not leader or not leader:HasTag("spiderwhisperer"))
-                    then
-                        owner.components.leader:AddFollower(v)
-                    end
-                end
-            end
-        end
-
-        inst._spider_update = safe_spider_update
-        if inst.updatetask then
-            inst.updatetask:Cancel()
-            inst.updatetask = inst:DoPeriodicTask(0.5, safe_spider_update, 1)
-        end
-    end)
-end
-
----------- CUSTOM TAGGING FOR AUTO SORTING CHEST ----------
-
-if modEnabled("workshop-3232213331") or modEnabled("workshop-1932983865") then
-    local asc_fridges = {
-        "deep_freezer",
-    }
-
-    for _, v in ipairs(asc_fridges) do
-        AddPrefabPostInit(v, function(inst)
-            if not inst:HasTag("asc_fridge") then
-                inst:AddTag("asc_fridge")
-            end
-        end)
-    end
-
-    local asc_chests = {
-        "terrariumchest",
-        "greenbed"
-    }
-
-    for _, v in ipairs(asc_chests) do
-        AddPrefabPostInit(v, function(inst)
-            if not inst:HasTag("asc_chest") then
-                inst:AddTag("asc_chest")
-            end
-        end)
-    end
-
-    -- check if "Storage wardrobe" mod is enabled
-    if modEnabled("workshop-2794741028") then
-        AddPrefabPostInit("wardrobe", function(inst)
-            if not inst:HasTag("asc_chest") then
-                inst:AddTag("asc_chest")
-            end
-        end)
-    end
-end
-
----------- CUSTOM PATCH FOR COFFEE IN THE FUMAROLES MOD ----------
-
-if modEnabled("workshop-3573989143") then
-    AddPrefabPostInit("dug_coffeebush", function(inst)
-        inst:AddTag("bush")
-        inst:AddTag("plant")
-        inst:AddTag("renewable")
-        inst:AddTag("lunarplant_target")
-        inst:AddTag("volcanicplant")
-
-        if not TheWorld.ismastersim then
-            return
-        end
-
-        -- Override the deployable check function
-        if inst.components.deployable then
-            inst.components.deployable._custom_candeploy_fn = function(inst, pt, _, _)
-                local x, y, z = pt:Get()
-                local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
-
-                -- Table of valid tiles (matching vanilla sproutrock)
-                local valid_tiles = {
-                    WORLD_TILES.VENT,
-                    WORLD_TILES.FUMAROLE,
-                    WORLD_TILES.VOLCANO
-                }
-
-                for _, valid_tile in ipairs(valid_tiles) do
-                    if tile == valid_tile then
-                        local spacing_radius = DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM]
-                        if inst.replica.inventoryitem then
-                            spacing_radius = inst.replica.inventoryitem:DeploySpacingRadius()
-                        end
-                        return TheWorld.Map:IsDeployPointClear(pt, inst, spacing_radius)
-                    end
-                end
-
-                return false
-            end
-        end
-
-        inst:WatchWorldState("season", OnSeasonChange)
-        OnSeasonChange(inst, TheWorld.state.season)
-
-        MakeSnowCovered(inst)
-        MakeNoGrowInWinter(inst)
-    end)
-end
-
----------- CUSTOM WINTER COAT PATCH FOR PEARL FOR WHEN MORE EQUIP SLOTS+ IS LOADED ----------
--- keep this patch here until the author of More Equip Slots+ adds it to their modmain
-if modEnabled("workshop-3372256873") then
-    AddPrefabPostInit("hermitcrab", function(inst)
-        if inst.iscoat then
-            inst.iscoat = function(item)
-                return item.components.insulator and
-                        item.components.insulator:GetInsulation() >= TUNING.INSULATION_SMALL and
-                        item.components.insulator:GetType() == SEASONS.WINTER and
-                        item.components.equippable and
-                        (item.components.equippable.equipslot == EQUIPSLOTS.BODY or
-                                item.components.equippable.equipslot == EQUIPSLOTS.SHIRT)
-            end
-        end
-    end)
+if FROG_RAIN_PERCENT ~= 1 then
+    local load_storable_souls = require("frog_rain_settings")
+    load_storable_souls(TUNING)
 end

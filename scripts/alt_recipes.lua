@@ -1,10 +1,17 @@
 -- custom alt recipes for using dried leaves in place of the fresh counterparts
 
-return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
+return function(modEnabled, config, AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRAFTING_FILTERS, CHARACTER_INGREDIENT, AddIngredientValues, AddPrefabPostInit)
+    local WORM_BOSS_MOUTH_MOD = modEnabled("workshop-3474047377")
+    local CRAFTABLE_WORM_BOSS_MOUTH = config.CRAFTABLE_WORM_BOSS_MOUTH
+    local WORM_BOSS_MOUTH_INGREDIENT_SET = config.WORM_BOSS_MOUTH_INGREDIENT_SET
+
     -- forgetmelots are already added as a filler, so we skip that
     local freshLeaves = {"petals", "foliage", "succulent_picked", "firenettles", "tillweed", "moon_tree_blossom"}
+    local driedLeaves = {"petals_dried", "foliage_dried", "succulent_picked_dried", "firenettles_dried", "tillweed_dried", "moon_tree_blossom_dried"}
+    local magicLeaves = {"petals_evil", "petals_evil_dried"}
     AddIngredientValues(freshLeaves, {decoration = 1})
-    AddIngredientValues({"petals_evil"}, {decoration = 1, magic = 0.5})
+    AddIngredientValues(driedLeaves, {decoration = 1})
+    AddIngredientValues(magicLeaves, {decoration = 1, magic = 0.5})
     -- we're adding this as only half the value of the ice
     AddIngredientValues({"snowball_item"}, {frozen = 0.5})
 
@@ -103,7 +110,7 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     end
 
     local function AddAltTillweedSalveRecipe(altRecipeName, tillweedIngredient, petalIngredient)
-        AddAltRecipe("tillweedsalve", altRecipeName, {{tillweedIngredient, 4}, {petalIngredient, 4}, {"charcoal", 1}})
+        AddAltRecipe("tillweedsalve", altRecipeName, {{tillweedIngredient, 1}, {petalIngredient, 1}, {"charcoal", 1}})
     end
 
     -- tillweed salve alt recipe set
@@ -361,4 +368,68 @@ return function(AllRecipes, AddRecipe2, Ingredient, TECH, AddRecipeToFilter, CRA
     AddWinterOrnamentLightRecipe("winter_ornament_light7", "spore_tall")
     AddWinterOrnamentLightRecipe("winter_ornament_light4", "lightbulb")
     AddWinterOrnamentLightRecipe("winter_ornament_light8", "lightbulb")
+
+    local function AddCombrinerOrnamentLightRecipe(recipeName, product, colorItem)
+        AddRecipe2(recipeName,
+                   {
+                       Ingredient("saltrock", 1),
+                       Ingredient("ash", 4),
+                       Ingredient("moonglass", 3),
+                       Ingredient(colorItem, 1)
+                   },
+                   TECH.SHELLWEAVER_ONE,
+                   {
+                       nounlock = true,
+                       manufactured = true,
+                       actionstr = "SHELLWEAVER",
+                       product = product,
+                       numtogive = 1
+                   }
+        )
+        SortAltRecipeSpecial(recipeName, "shellweaver_messagebottleempty_alt")
+    end
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light1", "winter_ornament_light1", "spore_medium")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light5", "winter_ornament_light5", "spore_medium")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light2", "winter_ornament_light2", "spore_small")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light6", "winter_ornament_light6", "spore_small")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light3", "winter_ornament_light3", "spore_tall")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light7", "winter_ornament_light7", "spore_tall")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light4", "winter_ornament_light4", "lightbulb")
+    AddCombrinerOrnamentLightRecipe("combriner_winter_ornament_light8", "winter_ornament_light8", "lightbulb")
+
+    if WORM_BOSS_MOUTH_MOD and CRAFTABLE_WORM_BOSS_MOUTH then
+        local boss_worm_mouth_ingredients = {}
+
+        if WORM_BOSS_MOUTH_INGREDIENT_SET == 1 then
+            boss_worm_mouth_ingredients = {
+                Ingredient("houndstooth", 4),
+                Ingredient("monstermeat", 8),
+                Ingredient("wormlight", 2),
+                Ingredient("purplegem", 1),
+                Ingredient("glommerfuel", 1),
+                Ingredient("beefalowool", 4)
+            }
+        else
+            boss_worm_mouth_ingredients = {
+                Ingredient("dreadstone", 4),
+                Ingredient("monstermeat", 8),
+                Ingredient("horrorfuel", 2),
+                Ingredient("orangegem", 1),
+                Ingredient("phlegm", 1),
+                Ingredient("steelwool", 4)
+            }
+        end
+
+        AddRecipe2("boss_worm_mouth_recipe",
+                   boss_worm_mouth_ingredients,
+                   TECH.LOST,
+                   {
+                       product = "boss_worm_mouth",
+                       atlas = "images/inventoryimages/wormbossmouthleft.xml",
+                       image = "wormbossmouthleft.tex",
+                       numtogive = 2
+                   },
+                   {"MAGIC"}
+        )
+    end
 end

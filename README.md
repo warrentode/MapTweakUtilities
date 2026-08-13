@@ -5,6 +5,7 @@ So everything tweaked inside this mod is with this style of co-op in mind.
 Each tweak is optional, so if you're already using a mod that covers it you can just keep it disabled in this mod.
 
 Current list of features added:
+* togglable config for auto removal of stumps, to include a tree use inst:AddTag("mtu_added_stumps") inside a AddPrefabPostInit function for that prefab, and to exclude a tree use inst:AddTag("mtu_excluded_stumps") - please understand that the exclude tag has priority in case both tags end up on a prefab
 * Portable Endothermic Firepit for Walter
 * Auto Stacking of Newly Dropped Items with Configurable Items to Exclude for Auto Farms
 * Lunar Blossom Trees drop blossoms the same way twigs are dropped from Twiggy Trees
@@ -32,7 +33,7 @@ Current list of features added:
 * Alt recipes for Prop Signs, inspired by the "Craftable Prop Sign" mod - these are additional recipes and won't override the other mod with behavior kept intact
 * Toggable option to protect followers with follower items
 * Toggable option to always reveal these follower items on the map
-* Toggable option to store Wortox Souls and Willow Embers in chests
+* Toggable option to store Wortox Souls and Willow Embers in chests - NOT compatible with any other mod that replaces the willow_ember file
 * Toggable option to track location on map for the following: Deadly Brightshade and Lureplant
 * Toggale option to always show walls on map once revealed
 * Toggale option to always show suspicious marble on map once revealed
@@ -42,6 +43,13 @@ Current list of features added:
 * Toggable option allowing extra storable items in the Picnic Casket
 * Added charcoal pit from "Additional Structures - Updated" mod with configurable settings for the ash drops
 * Toggable option to prevent perishing of disguises (Clever Disguise, Wraith's Wreath, Spiderhat, Beefalo Hat, and Shamlet Mask)
+* togglable option for effects based on critter traits from one pet, applied when fed and with its own duration timer
+  * WELLFED: same sanity aura as Glommer for the effect duration
+  * CRAFTY: gain the fastbuilder tag and lose the hungrybuilder tag for the effect duration
+  * PLAYFUL: increase to loyalty time when feeding a follower like pigmen or bunnymen for the effect duration
+  * COMBAT: increased movement speed for the effect duration
+  * includes Woby's traits
+  * if player has no effect active and somehow has two pets, then the first one fed "claims" the effect slot for as long as it is active
 
 ***
 If you like this mod, you can support my work by either subscribing or tipping in the following ways:

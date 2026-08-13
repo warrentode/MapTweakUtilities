@@ -1,5 +1,7 @@
 name = "Map Tweak Utilities"
-description = [[
+author = "ToadieOdie"
+version = "2.4.18"
+description = "Version: " .. version .. "\n\n" .. [[
 Adds a collection of tweaks that I have found helpful while playing on shared maps with my sons.
 Meaning we tend to build one shared mega base and work together on everything.
 So everything tweaked inside this mod is with this style of co-op in mind.
@@ -9,8 +11,6 @@ Each tweak is optional, so if you're already using a mod that covers it you can 
 See README for full details inside the mod's folder or visit:
 https://github.com/warrentode/MapTweakUtilities/blob/master/README.md
 ]]
-author = "ToadieOdie"
-version = "2.4.1"
 
 api_version = 10
 
@@ -27,6 +27,13 @@ icon = "modicon.tex"
 forumthread = ""
 priority = -9999 -- because of compat settings we want to be loaded last
 
+folder_name = folder_name or "Map Tweak Utilities Test"
+if not folder_name:find("workshop-3657037565", 1, true) and not folder_name:find("workshop-3773493415", 1, true) then
+    name = name .. " -dev"
+elseif not folder_name:find("workshop-3657037565", 1, true) then
+    name = name .. " Test"
+end
+
 local Empty = {{description = "", data = 0}}
 
 local function Title(title)
@@ -34,6 +41,50 @@ local function Title(title)
 end
 
 configuration_options = {
+    Title("=============================="),
+    Title("Fireflies for Above-Average Tree Trunks"),
+    Title("=============================="),
+    {
+        name = "oceantree_fireflies",
+        label = "Enable Firefly Spawning",
+        hover = "If set to Enabled, fireflies will spawn under the canopy of Above-Average Tree Trunks that players grew.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Critter Trait Effects"),
+    Title("=============================="),
+    {
+        name = "critter_trait_effects",
+        label = "Enable Critter Trait Effect",
+        hover = "If set to Enabled, critters will apply effects to their owners based on their traits. Woby is counted for this.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    Title("=============================="),
+    Title("Frog Rain Setting"),
+    Title("=============================="),
+    {
+        name = "frog_rain_percent",
+        label = "Change Frog Fall Counts",
+        hover = "Percentage of vanilla counts for number of frogs that fall in the rain.",
+        options = {
+            {description = "25%", data = 0.25},
+            {description = "50%", data = 0.50},
+            {description = "75%", data = 0.75},
+            {description = "100%", data = 1},
+            {description = "200%", data = 2},
+            {description = "300%", data = 3},
+            {description = "400%", data = 4},
+        },
+        default = 1,
+    },
     Title("=============================="),
     Title("Charcoal Pit Settings"),
     Title("=============================="),
@@ -77,12 +128,12 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
-    Title("Picnic Casket Settings"),
+    Title("Additional Storage Items Settings"),
     Title("=============================="),
     {
-        name = "extra_basket_items",
+        name = "extra_storage_items",
         label = "Additional Storable",
-        hover = "If Enabled, flower garden related items, elixer ingredients, and the Wraith's Wreath will be storable in the basket.",
+        hover = "If Enabled, flower garden related items, elixer ingredients, and the Wraith's Wreath will be storable in Wendy's basket and fishing rods will be storable in the tackle boxes.",
         options = {
             {description = "Enable", data = true},
             {description = "Disable", data = false},
@@ -108,7 +159,7 @@ configuration_options = {
     {
         name = "spicepack_waterproof",
         label = "Make It Waterproof",
-        hover = "Set it to be waterproof or not.",
+        hover = "Set it to be waterproof or not with Ultimate Backpack Settings mod.",
         options = {
             {description = "YES", data = true},
             {description = "NO", data = false},
@@ -118,7 +169,7 @@ configuration_options = {
     {
         name = "spicepack_burnable",
         label = "Make It Burnable",
-        hover = "Set it to be burnable or not.",
+        hover = "Set it to be burnable or not with Ultimate Backpack Settings mod.",
         options = {
             {description = "YES", data = true},
             {description = "NO", data = false},
@@ -128,7 +179,7 @@ configuration_options = {
     {
         name = "spicepack_inventory",
         label = "Make It Storable",
-        hover = "Set it to be storable or not.",
+        hover = "Set it to be storable or not with Ultimate Backpack Settings mod.",
         options = {
             {description = "YES", data = true},
             {description = "NO", data = false},
@@ -138,7 +189,56 @@ configuration_options = {
     {
         name = "spicepack_perish_mult",
         label = "Set Perish Multiplier",
-        hover = "Set the perish multiplier.",
+        hover = "Set the perish multiplier with Ultimate Backpack Settings mod.",
+        options = {
+            {description = "No Change", data = 1},
+            {description = "x2 Slower", data = 0.5},
+            {description = "x4 Slower", data = 0.25},
+            {description = "x8 Slower", data = 0.125},
+            {description = "x16 Slower", data = 0.0625},
+            {description = "Never", data = 0},
+            {description = "Refresh", data = -1},
+            {description = "Spoil", data = 9000},
+        },
+        default = 1,
+    },
+    Title("=============================="),
+    Title("Webber Backpack Settings"),
+    Title("=============================="),
+    {
+        name = "webber_backpack_waterproof",
+        label = "Make It Waterproof",
+        hover = "Make Webber Great Again backpack. Set it to be waterproof or not with Ultimate Backpack Settings mod.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "webber_backpack_burnable",
+        label = "Make It Burnable",
+        hover = "Make Webber Great Again backpack. Set it to be burnable or not with Ultimate Backpack Settings mod.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = true,
+    },
+    {
+        name = "webber_backpack_inventory",
+        label = "Make It Storable",
+        hover = "Make Webber Great Again backpack. Set it to be storable or not with Ultimate Backpack Settings mod.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "webber_backpack_perish_mult",
+        label = "Set Perish Multiplier",
+        hover = "Make Webber Great Again backpack. Set the perish multiplier with Ultimate Backpack Settings mod.",
         options = {
             {description = "No Change", data = 1},
             {description = "x2 Slower", data = 0.5},
@@ -362,6 +462,19 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
+    Title("Auto Stump Removal Setting"),
+    Title("=============================="),
+    {
+        name = "auto_stump_removal",
+        label = "Auto Remove Stumps",
+        hover = "Includes retrofitting removal and the stump's dropped logs. Enable or Disable this Process. Modders can tag trees to include or exclude from this. See README for details",
+        options = {
+            {description = "No Auto Remove", data = false},
+            {description = "Auto Remove", data = true},
+        },
+        default = false,
+    },
+    Title("=============================="),
     Title("Batch Trade Settings"),
     Title("=============================="),
     {
@@ -465,6 +578,26 @@ configuration_options = {
         },
         default = false,
     },
+    {
+        name = "allow_craftable_boss_worm_mouth",
+        label = "Allow Craftable Wormhole",
+        hover = "If set to Yes, and the Worm Boss Mouth mod is enabled, the Worm Boss will have a blueprint for its mouth.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "boss_worm_mouth_recipe",
+        label = "Boss Worm Mouth Recipe",
+        hover = "If set to Yes, choose the recipe.",
+        options = {
+            {description = "Early Access", data = 1},
+            {description = "Shadow Rift Access", data = 0},
+        },
+        default = 0,
+    },
     Title("=============================="),
     Title("Webber Settings"),
     Title("=============================="),
@@ -537,6 +670,29 @@ configuration_options = {
         default = false,
     },
     Title("=============================="),
+    Title("Warly Cookware Settings"),
+    Title("=============================="),
+    {
+        name = "warly_cookpot_everyone",
+        label = "Everyone Use Portable Crock Pot",
+        hover = "If Enabled, the portable crock pot can be placed and used by everyone. Recipe remains Warly only.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "warly_recipes_locked",
+        label = "Keep Exclusive Dishes Warly Only",
+        hover = "If Enabled, only Warly can cook his exclusive dishes in the portable crock pot. Everyone else gets the regular crock pot results.",
+        options = {
+            {description = "Enabled", data = true},
+            {description = "Disable", data = false},
+        },
+        default = true,
+    },
+    Title("=============================="),
     Title("Wandering Trader Settings"),
     Title("=============================="),
     {
@@ -553,6 +709,56 @@ configuration_options = {
         name = "wanderingtrader_walter_trades",
         label = "Add Walter Specific Item Trades",
         hover = "If set to Yes, the Wandering Trader will have extra trades based on the slingshot and portable campfire settings.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_warly_trades",
+        label = "Add Portable Cookpot Trade",
+        hover = "If set to Yes, the Wandering Trader will have an extra trade based on the portable cookpot setting.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_willow_trades",
+        label = "Add Bernie Trade",
+        hover = "If set to Yes, the Wandering Trader will have Bernie to offer as an extra trade.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_woodie_trades",
+        label = "Add Treeguard Idol Trade",
+        hover = "If set to Yes, the Wandering Trader will have the Treeguard Idol to offer as an extra trade.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_wilson_trades",
+        label = "Add Iridescent Gem Trade",
+        hover = "If set to Yes, the Wandering Trader will have the Iridescent Gem to offer as an extra trade, with the chance to show up on days of the full moon.",
+        options = {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wanderingtrader_maxwell_trades",
+        label = "Add Magician's Chest Trade",
+        hover = "If set to Yes, the Wandering Trader will have the Magician's Chest to offer as an extra trade.",
         options = {
             {description = "YES", data = true},
             {description = "NO", data = false},
@@ -597,9 +803,9 @@ configuration_options = {
         default = 30,
     },
     {
-        name = "boss_scale_blueprints",
-        label = "Scale Blueprint Drops",
-        hover = "Toggle scaling for boss blueprint drops.",
+        name = "scale_boss_worm_mouth",
+        label = "Scale Boss Worm Mouth",
+        hover = "Include Boss Worm Mouth in scaling (requires the Giant Worm Can Dig Wormhole mod) - gives 2 mouths per player",
         options = {
             {description = "Disabled", data = false},
             {description = "Enabled", data = true},
@@ -607,9 +813,9 @@ configuration_options = {
         default = false,
     },
     {
-        name = "scale_boss_worm_mouth",
-        label = "Scale Boss Worm Mouth",
-        hover = "Include Boss Worm Mouth in scaling (requires the Giant Worm Can Dig Wormhole mod) - gives 2 mouths per player",
+        name = "boss_scale_solo_bonus",
+        label = "Solo Bonus Drops",
+        hover = "Good for testing. When enabled, the first player is counted for scaled drops when scaling for total players logged in.",
         options = {
             {description = "Disabled", data = false},
             {description = "Enabled", data = true},
@@ -660,6 +866,16 @@ configuration_options = {
         default = false,
     },
     {
+        name = "allow_hounds",
+        label = "Allow Hounds Eating",
+        hover = "If Enabled, all hounds will be allowed to eat items on the ground when swiping protections are enabled.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
         name = "allow_worm_boss",
         label = "Allow Worm Boss Eating",
         hover = "If Enabled, the great depths worm will eat things normally when swiping protections are enabled.",
@@ -686,6 +902,16 @@ configuration_options = {
         name = "reveal_follower_item",
         label = "Reveal Follower Items",
         hover = "If Enabled, the follower items for the above mobs will be always revealed on the map.",
+        options = {
+            {description = "Disabled", data = false},
+            {description = "Enabled", data = true},
+        },
+        default = false,
+    },
+    {
+        name = "no_tamed_domestication_decay",
+        label = "No Tamed Domestication Decay",
+        hover = "If Enabled, fully tamed beefalo do not lose domestication over time.",
         options = {
             {description = "Disabled", data = false},
             {description = "Enabled", data = true},
@@ -777,6 +1003,47 @@ configuration_options = {
             {description = "Enabled", data = true},
         },
         default = false,
+    },
+    Title("=============================="),
+    Title("Wall Regen Settings"),
+    Title("=============================="),
+    {
+        name = "wall_health_enhance",
+        label = "Enhanced Wall Health",
+        hover = "Increase the health of walls.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wall_health_regen",
+        label = "Wall Health Regen",
+        hover = "Set whether walls regen or not.",
+        options = {
+            {description = "Enable", data = true},
+            {description = "Disable", data = false},
+        },
+        default = false,
+    },
+    {
+        name = "wall_regen_value",
+        label = "Wall Health Regen Value",
+        hover = "If wall regen is enabled, how much the walls regen every 5 seconds",
+        options = {
+            {description = "10", data = 10},
+            {description = "20", data = 20},
+            {description = "30", data = 30},
+            {description = "40", data = 40},
+            {description = "50", data = 50},
+            {description = "60", data = 60},
+            {description = "70", data = 70},
+            {description = "80", data = 80},
+            {description = "90", data = 90},
+            {description = "100", data = 100},
+        },
+        default = 50,
     },
     Title("=============================="),
     Title("Balatro Prizes"),

@@ -1,3 +1,59 @@
+2.4.18:
+* added effects based on critter traits
+* added auto stump removal
+* fixed how the boss scaling solo bonus works
+* cleaned up modmain file by moving features into feature files
+* adjusted limits on the wandering trader's custom trades
+* added configurable portablecookpot option to make it usable to anyone with additional option to keep Warly's special cooking recipes available only to him and compatible with the
+* adjusted recipes of the wandering trader's extra trades and added the c_resetTrades() console command to clear the offerings and reroll them
+* added patch for upgrade persistence with the Stronger Drying Rack mod
+* fixed the problem of willow's spells getting cancelled out with the storable embers option enable - this mod is still not compatible with any other mod that replaces the willow_ember file
+2.4.17:
+* altered ammo trades offered by wandering trader
+* added Twintailed Heart and Thermal Balm to medical items tag
+* added self revival when haunting a Twintailed Heart or Telltale Heart
+* added bats to the no swiping list
+* added option to have fishing rods in storable list for tackle boxes
+* added wall regen settings
+* added setting for turning off domestication decay
+* fixed alt tillweed salve recipes
+2.4.16:
+* fixed slurtles and snurtles not eating items off the ground when set to allowed
+2.4.15:
+* added festive light recipes to combriner
+* added config to hounds eating
+* added boss worm mouth recipe if alt recipes enabled with worm boss mouth mod enabled
+* fixed bonus scaled drops from terror twins
+2.4.14.8:
+* removed lord fruit fly fruit drops from boss loot scaling
+2.4.14.6:
+* tweaking lord fruit fly fruit drops
+2.4.14.4:
+* tweaking dynamic mod name
+2.4.14:
+* added settings for frog rain
+2.4.13.2:
+* removed redundant failsafe in balatro settings
+2.4.13.1:
+* adjusted when player counts for friendly fruit fly is done to get correct drops
+2.4.13:
+* added compat patch for webber_backpack
+* backpack compat patches now require Ultimate Backpack Settings mod to apply
+* minor clean up to modmain file
+* fixed balatro related crash
+* adjusted player counts for friendly fruit fly if bonus solo drops is enabled
+2.4.12:
+* minor clean up to balatro settings file
+* set ruins wall image to dreadstone icon as a placeholder for now
+* added hounds to the no eating list
+* fixed flame effect on portablecoldfirepit
+2.4.11.1:
+* fixing boss loot scaling
+2.4.11:
+* removed blueprints from boss loot scaling
+* fixed boss loot scaling
+2.4.10:
+* rolled back to 2.4.1 to add just the pearl accepting winter coats patch
 2.4.1:
 * Pearl no longer targeted by the Ice Flingomatic when follower protection is enabled
 * Pearl now accepts winter coats correctly when "More Equip Slots+" mod is loaded

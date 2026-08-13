@@ -7,8 +7,37 @@ return function(TUNING, SetSharedLootTable, AddPrefabPostInit, config)
 
     local PROTECT_FOLLOWERS = config.PROTECT_FOLLOWERS
     local REVEAL_FOLLOWERS = config.REVEAL_FOLLOWERS
+    local NO_TAMED_DOMESTICATION_DECAY = config.NO_TAMED_DOMESTICATION_DECAY
 
-    -- protection settings
+    ---------- DOMESTICATION DECAY SETTING ----------
+
+    local Domesticatable = require("components/domesticatable")
+
+    if NO_TAMED_DOMESTICATION_DECAY then
+        local function ShouldHoldDomestication(inst)
+            local self = inst.components.domesticatable
+            return self ~= nil
+                    and self:IsDomesticated()
+                    and inst.tendency ~= nil
+                    and (inst.components.herdmember == nil or inst.components.herdmember:GetHerd() == nil)
+        end
+
+        local OldCheckForChanges = Domesticatable.CheckForChanges
+        function Domesticatable:CheckForChanges()
+            if ShouldHoldDomestication(self.inst) then
+                self.domesticationdecaypaused = true
+            end
+            return OldCheckForChanges(self)
+        end
+
+        local OldPauseDomesticationDecay = Domesticatable.PauseDomesticationDecay
+        function Domesticatable:PauseDomesticationDecay(pause)
+            return OldPauseDomesticationDecay(self, pause or ShouldHoldDomestication(self.inst))
+        end
+    end
+
+    ---------- PROTECTION SETTINGS ----------
+
     if PROTECT_FOLLOWERS then
         local PROTECTED_MOBS = {
             "glommer",

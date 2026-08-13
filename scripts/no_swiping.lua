@@ -4,6 +4,7 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
     local ALLOW_SLURTLE_EATING = config.ALLOW_SLURTLE_EATING
     local ALLOW_SPIDER_EATING = config.ALLOW_SPIDER_EATING
     local ALLOW_PIG_EATING = config.ALLOW_PIG_EATING
+    local ALLOW_HOUND_EATING = config.ALLOW_HOUND_EATING
     local PIG_TAGS = {
         "pig",
         "werepig",
@@ -35,7 +36,11 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
         "spider_water",
         "pigman",
         "pigguard",
-        "moonpig"
+        "moonpig",
+        "hound",
+        "icehound",
+        "firehound",
+        "bat"
     }
 
     -- Tag mobs as thieves
@@ -74,10 +79,16 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
             if ALLOW_SLURTLE_EATING and doer:HasTag("slurtle") then
                 return oldEatValid and oldEatValid(action) or true
             end
+            if ALLOW_SLURTLE_EATING and doer:HasTag("snurtle") then
+                return oldEatValid and oldEatValid(action) or true
+            end
             if ALLOW_SPIDER_EATING and doer:HasTag("spider") then
                 return oldEatValid and oldEatValid(action) or true
             end
             if ALLOW_PIG_EATING and doer:HasTag("pig_class") then
+                return oldEatValid and oldEatValid(action) or true
+            end
+            if ALLOW_HOUND_EATING and doer:HasTag("hound") then
                 return oldEatValid and oldEatValid(action) or true
             end
             if doer:HasTag("thief") then
@@ -125,13 +136,22 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
     end
 
     -- Override pickup action for tagged mobs
-    local oldActionValid = ACTIONS.PICKUP.validfn
+    local oldPickupValid = ACTIONS.PICKUP.validfn
     ACTIONS.PICKUP.validfn = function(action)
         local doer = action.doer
+        if ALLOW_SLURTLE_EATING and doer:HasTag("slurtle") then
+            return oldPickupValid and oldPickupValid(action) or true
+        end
+        if ALLOW_SLURTLE_EATING and doer:HasTag("snurtle") then
+            return oldPickupValid and oldPickupValid(action) or true
+        end
+        if ALLOW_HOUND_EATING and doer:HasTag("hound") then
+            return oldPickupValid and oldPickupValid(action) or true
+        end
         if doer and doer:HasTag("thief") then
             return false
         end
-        return oldActionValid and oldActionValid(action) or true
+        return oldPickupValid and oldPickupValid(action) or true
     end
 
     -- Override pick action for tagged mobs
@@ -155,7 +175,7 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
     end
 
     -- Override steal action for tagged mobs
-    local old_validfn = ACTIONS.STEAL.validfn
+    local oldStealValid = ACTIONS.STEAL.validfn
     ACTIONS.STEAL.validfn = function(action)
         local doer = action.doer
         if doer and doer:HasTag("thief") then
@@ -164,8 +184,8 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
         end
 
         -- Preserve normal behavior for everyone else
-        if old_validfn then
-            return old_validfn(action)
+        if oldStealValid then
+            return oldStealValid(action)
         end
 
         return true
@@ -185,7 +205,7 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
     end
 
     -- Override for Catcoon ground pickup
-    local oldValid = ACTIONS.CATPLAYGROUND.validfn
+    local oldCatPlayGroundValid = ACTIONS.CATPLAYGROUND.validfn
     ACTIONS.CATPLAYGROUND.validfn = function(action)
         local doer = action.doer
         -- Block ground pickup only for Catcoons
@@ -193,7 +213,7 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
             return false
         end
         -- Otherwise preserve original behavior
-        return oldValid and oldValid(action) or true
+        return oldCatPlayGroundValid and oldCatPlayGroundValid(action) or true
     end
 
     -- Override cutlass theft function
@@ -202,12 +222,12 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
             return
         end
 
-        local old_onattack = inst.components.weapon.onattack
+        local oldOnAttack = inst.components.weapon.onattack
         inst.components.weapon:SetOnAttack(function(inst, attacker, target)
             if attacker and attacker:HasTag("player") and (target and not target:HasTag("player")) then
                 -- allow the player to steal from mobs but not other players
-                if old_onattack then
-                    old_onattack(inst, attacker, target)
+                if oldOnAttack then
+                    oldOnAttack(inst, attacker, target)
                 end
             else
                 -- skip cutlass stealing from target
@@ -222,13 +242,13 @@ return function(Prefabs, AddPrefabPostInit, AddStategraphPostInit, AddSimPostIni
         if target and target:IsValid() and inst:IsNear(target, 2) and
                 inst.HatTest and inst:HatTest(target) then
 
-            local oldhat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-            if oldhat then
+            local oldHat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+            if oldHat then
                 if target:HasTag("player") then
-                    target.components.inventory:GiveItem(oldhat) --give or drop
+                    target.components.inventory:GiveItem(oldHat) --give or drop
                 else
                     --don't get stuck in follower inventory
-                    target.components.inventory:DropItem(oldhat)
+                    target.components.inventory:DropItem(oldHat)
                 end
             end
             target.components.inventory:Equip(inst)

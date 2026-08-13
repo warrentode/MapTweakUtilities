@@ -10,6 +10,7 @@ return function(AddPrefabPostInit, ACTIONS, config)
         local meditems = {
             -- vanilla DST items
             "reviver",
+            "wortox_reviver",
             "amulet",
             "lifeinjector",
             "halloweenpotion_sanity_large",
@@ -18,6 +19,7 @@ return function(AddPrefabPostInit, ACTIONS, config)
             "halloweenpotion_health_small",
             "healingsalve",
             "healingsalve_acid",
+            "healingsalve_fumarole",
             "bandage",
             "tillweedsalve",
             "spider_healer_item",
@@ -68,12 +70,40 @@ return function(AddPrefabPostInit, ACTIONS, config)
 
     ---------- MEDICAL HAUNTING PATCH ----------
 
+    local function OnHeartHaunt(inst, haunter)
+        if haunter and haunter:HasTag"playerghost" then
+            if inst.skin_sound then
+                inst.SoundEmitter:PlaySound(inst.skin_sound)
+            end
+
+            inst:PushEvent("usereviver", {user = haunter})
+            inst:Remove()
+
+            haunter:PushEvent("respawnfromghost", {source = inst})
+            haunter.components.health:DeltaPenalty(TUNING.REVIVE_HEALTH_PENALTY)
+
+            return true
+        end
+    end
+
+    local hauntableHearts = {
+        "reviver",
+        "wortox_reviver"
+    }
+
     if MEDICAL_HAUNTING then
         local oldHauntfn = ACTIONS.HAUNT.fn
         ACTIONS.HAUNT.fn = function(act)
             if act.doer ~= nil and act.target ~= nil then
                 local inst = act.target
                 if inst.components.container then
+                    for k = 1, inst.components.container.numslots do
+                        local v = inst.components.container.slots[k]
+                        if v and v.prefab == "amulet" then
+                            inst.components.container:DropItem(v)
+                            return oldHauntfn(act)
+                        end
+                    end
                     if act.doer.prefab == "wanda" then
                         for k = 1, inst.components.container.numslots do
                             local v = inst.components.container.slots[k]
@@ -85,14 +115,14 @@ return function(AddPrefabPostInit, ACTIONS, config)
                     end
                     for k = 1, inst.components.container.numslots do
                         local v = inst.components.container.slots[k]
-                        if v and v.prefab == "amulet" then
+                        if v and v.prefab == "reviver" then
                             inst.components.container:DropItem(v)
                             return oldHauntfn(act)
                         end
                     end
                     for k = 1, inst.components.container.numslots do
                         local v = inst.components.container.slots[k]
-                        if v and v.prefab == "reviver" then
+                        if v and v.prefab == "wortox_reviver" then
                             inst.components.container:DropItem(v)
                             return oldHauntfn(act)
                         end
@@ -108,6 +138,18 @@ return function(AddPrefabPostInit, ACTIONS, config)
             end
             return oldHauntfn(act)
         end
-    end
 
+        for _, v in ipairs(hauntableHearts) do
+            AddPrefabPostInit(v, function(inst)
+                if not TheWorld.ismastersim then
+                    return
+                end
+
+                if not inst.components.hauntable then
+                    inst:AddComponent("hauntable")
+                end
+                inst.components.hauntable:SetOnHauntFn(OnHeartHaunt)
+            end)
+        end
+    end
 end
